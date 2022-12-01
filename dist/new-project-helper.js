@@ -7,7 +7,7 @@ exports.promptForNewProject = void 0;
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
 const chalk_1 = __importDefault(require("chalk"));
-const template_1 = require("./template");
+const template_helper_1 = require("./template-helper");
 const inquirer_1 = __importDefault(require("inquirer"));
 const CURR_DIR = process.cwd();
 const CHOICES = fs_1.default.readdirSync(path_1.default.join(__dirname, "..", "templates"));
@@ -64,7 +64,7 @@ function createDirectoryContents(templatePath, newProjectPath, templateData) {
         const fileStats = fs_1.default.statSync(origFilePath);
         if (fileStats.isFile()) {
             let fileContents = fs_1.default.readFileSync(origFilePath, "utf8");
-            fileContents = (0, template_1.render)(fileContents, templateData);
+            fileContents = (0, template_helper_1.render)(fileContents, templateData);
             const writePath = path_1.default.join(CURR_DIR, newProjectPath, file);
             fs_1.default.writeFileSync(writePath, fileContents, "utf8");
         }

@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import chalk from "chalk";
-import { render, TemplateData } from "./template";
+import { render, TemplateData } from "./template-helper";
 import inquirer, { Answers } from "inquirer";
 
 const CURR_DIR = process.cwd();
