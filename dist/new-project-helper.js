@@ -13,7 +13,7 @@ const CURR_DIR = process.cwd();
 const CHOICES = fs_1.default.readdirSync(path_1.default.join(__dirname, "..", "templates"));
 const QUESTIONS = [
     {
-        name: "project-choice",
+        name: "template-choice",
         type: "list",
         message: "What project template would you like to generate?",
         choices: CHOICES,
@@ -38,11 +38,12 @@ const QUESTIONS = [
 function promptForNewProject() {
     inquirer_1.default.prompt(QUESTIONS).then((answers) => {
         //console.log(answers);
-        const projectChoice = answers["project-choice"] ?? CHOICES[0];
+        const templateChoice = answers["template-choice"] ?? CHOICES[0];
         const projectName = answers["project-name"];
-        const templatePath = path_1.default.join(__dirname, "..", "templates", projectChoice);
+        const templatePath = path_1.default.join(__dirname, "..", "templates", templateChoice);
         const templateData = {
             projectName: projectName,
+            selectedTemplate: templateChoice,
         };
         createNewProject(projectName, templatePath, templateData);
     });
@@ -56,6 +57,7 @@ function createNewProject(newProjectName, templatePath, templateData) {
     }
     fs_1.default.mkdirSync(newProjectPath);
     createDirectoryContents(templatePath, newProjectName, templateData);
+    createPinkyringFile(newProjectPath, templateData);
 }
 function createDirectoryContents(templatePath, newProjectPath, templateData) {
     const filesToCreate = fs_1.default.readdirSync(templatePath);
@@ -74,4 +76,8 @@ function createDirectoryContents(templatePath, newProjectPath, templateData) {
             createDirectoryContents(path_1.default.join(templatePath, file), path_1.default.join(newProjectPath, file), templateData);
         }
     });
+}
+function createPinkyringFile(newProjectPath, templateData) {
+    const filePath = path_1.default.join(newProjectPath, ".pinkyring");
+    fs_1.default.writeFileSync(filePath, `TEMPLATE='${templateData.selectedTemplate}'`);
 }
