@@ -1,0 +1,92 @@
+Resources:
+  VPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      InstanceTenancy: default
+      Tags:
+      - Key: Name
+        Value: ${self:provider.stackName}-VPC
+
+  SubnetAPublic:
+    DependsOn: VPC
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: ${self:provider.region}a
+      CidrBlock: 10.0.0.0/24
+      VpcId: !Ref VPC
+      Tags:
+      - Key: Name
+        Value: ${self:provider.stackName}-Public_SubnetA
+      - Key: Reach
+        Value: public
+  
+  SubnetBPublic:
+    DependsOn: VPC
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: ${self:provider.region}b
+      CidrBlock: 10.0.1.0/24
+      VpcId: !Ref VPC
+      Tags:
+      - Key: Name
+        Value: ${self:provider.stackName}-Public_SubnetB
+      - Key: Reach
+        Value: public
+  
+  SubnetAPrivate:
+    DependsOn: VPC
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: ${self:provider.region}a
+      CidrBlock: 10.0.100.0/24
+      VpcId: !Ref VPC
+      Tags:
+      - Key: Name
+        Value: ${self:provider.stackName}-Private_SubnetA
+      - Key: Reach
+        Value: private
+  
+  SubnetBPrivate:
+    DependsOn: VPC
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: ${self:provider.region}b
+      CidrBlock: 10.0.101.0/24
+      VpcId: !Ref VPC
+      Tags:
+      - Key: Name
+        Value: ${self:provider.stackName}-Private_SubnetB
+      - Key: Reach
+        Value: private
+  
+  SubnetRouteTablePrivate:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VPC
+      Tags: 
+      - Key: Name
+        Value: ${self:provider.stackName}-Private_Subnet_RouteTable
+
+  SubnetAPrivateRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties: 
+      RouteTableId: !Ref SubnetRouteTablePrivate
+      SubnetId: !Ref SubnetAPrivate
+
+  SubnetBPrivateRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties: 
+      RouteTableId: !Ref SubnetRouteTablePrivate
+      SubnetId: !Ref SubnetBPrivate
+
+  PublicSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: !Ref 'AWS::StackName'
+      VpcId: !Ref VPC
+      Tags:
+      - Key: Name
+        Value: ${self:provider.stackName}-PublicSecurityGroup

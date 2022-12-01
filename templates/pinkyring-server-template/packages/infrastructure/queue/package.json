@@ -1,0 +1,20 @@
+{
+  "name": "@pinkyring-server-template/infrastructure_queue",
+  "exports": {
+    "./*": "./build/*.js"
+  },
+  "typesVersions": {
+    "*": {
+      "*": [
+        "build/*"
+      ]
+    }
+  },
+  "dependencies": {
+    "@pinkyring-server-template/core": "*",
+    "amqplib": "^0.10.3"
+  },
+  "devDependencies": {
+    "@types/amqplib": "^0.10.0"
+  }
+}

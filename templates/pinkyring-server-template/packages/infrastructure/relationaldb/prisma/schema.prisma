@@ -1,0 +1,40 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-1.0.x"]
+  previewFeatures = ["fullTextSearch", "fullTextIndex"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("MYSQL_DATABASE_URL")
+}
+
+model BlogPost {
+  id String @id @default(cuid())
+  title String
+  text String @db.Text
+  createdAt DateTime  @default(now())
+  updatedAt DateTime @updatedAt
+
+  authorId String
+  author Author @relation(fields: [authorId], references: [id])
+
+  @@unique([authorId, title])
+  @@fulltext([text])
+}
+
+model Author {
+  id String @id @default(cuid())
+  name String @unique
+
+  blogPosts BlogPost[]
+}
+
+model IdempotentRequest {
+  id String @unique
+  createdAt DateTime @default(now())
+  result String? @db.Text
+}

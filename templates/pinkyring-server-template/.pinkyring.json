@@ -1,0 +1,82 @@
+{
+  "templateName": "pinkyring-server-template",
+  "pinkyringVersion": "1.0.0",
+  "removableOptions": [
+    {
+      "label": "SERVERLESS",
+      "globPatterns": [
+        ".github/workflows/serverless.*",
+        "packages/infrastructure/aws",
+        "serverless",
+        "serverless.yml"
+      ],
+      "contentPattern": ".pinkyring=SERVERLESS",
+      "typescriptReferences": [
+        "infrastructure/aws/lambdas",
+        "infrastructure/aws/snqs"
+      ],
+      "packageNames": [
+        "@pinkyring-server-template/infrastructure_aws_lambdas",
+        "@pinkyring-server-template/infrastructure_aws_snqs"
+      ]
+    },
+    {
+      "label": "GITHUB WORKFLOWS",
+      "globPatterns": [".github"],
+      "contentPattern": ".pinkyring=GITHUB_WORKFLOWS"
+    },
+    {
+      "label": "REST ENDPOINTS",
+      "globPatterns": ["packages/apps/api-rest"],
+      "typescriptReferences": ["apps/api-rest"],
+      "packageNames": ["@pinkyring-server-template/apps_api-rest"],
+      "contentPattern": ".pinkyring=REST_ENDPOINTS"
+    },
+    {
+      "label": "CRON JOBS",
+      "globPatterns": [
+        "packages/apps/cron-jobs",
+        "packages/infrastructure/aws/lambdas/src/maintenance"
+      ],
+      "typescriptReferences": ["apps/cron-jobs"],
+      "packageNames": ["@pinkyring-server-template/apps_cron-jobs"],
+      "contentPattern": ".pinkyring=CRON_JOBS"
+    },
+    {
+      "label": "GRAPHQL",
+      "globPatterns": [
+        "packages/apps/api-graphql",
+        "packages/infrastructure/aws/lambdas/src/graphql",
+        "packages/core/src/graphql"
+      ],
+      "typescriptReferences": ["apps/api-graphql"],
+      "packageNames": ["@pinkyring-server-template/apps_api-graphql"],
+      "contentPattern": ".pinkyring=GRAPHQL"
+    },
+    {
+      "label": "EVENT SYSTEM",
+      "globPatterns": [
+        "packages/apps/event-handlers",
+        "packages/infrastructure/aws/lambdas/src/events",
+        "packages/infrastructure/aws/snqs",
+        "packages/infrastructure/queue",
+        "serverless/resources/queue.yml",
+        "packages/core/src/dtos/events.*",
+        "packages/core/src/interfaces/IEventRepository.*",
+        "packages/core/src/util/eventHelper.*",
+        "packages/tests/src/core/util/eventHelper.*"
+      ],
+      "typescriptReferences": [
+        "apps/event-handlers",
+        "infrastructure/aws/snqs",
+        "infrastructure/queue"
+      ],
+      "packageNames": [
+        "@pinkyring-server-template/apps_event-handlers",
+        "@pinkyring-server-template/infrastructure_aws_snqs",
+        "@pinkyring-server-template/infrastructure_queue"
+      ],
+      "contentPattern": ".pinkyring=EVENT_SYSTEM"
+    }
+  ]
+}

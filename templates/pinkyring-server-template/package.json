@@ -1,0 +1,55 @@
+{
+  "name": "pinkyring-server-template",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "everything": "npm run build && npm run generate:env && docker compose -f docker-compose.run-everything.yml up -d",
+    "everything:stop": "docker compose -f docker-compose.run-everything.yml down",
+    "generate:env": "node ./.env-maker.js",
+    "infra": "docker compose up -d",
+    "infra:stop": "docker compose down",
+    "build": "tsc -b",
+    "build:watch": "tsc -b -w",
+    "build:clean": "npx rimraf ./packages/**/build && npx rimraf ./packages/**/tsconfig.tsbuildinfo",
+    "merge-check": "npm run lint && npm run prettier:check && npm run test:unit && npm run test:it",
+    "prettier": "npx prettier --write .",
+    "prettier:check": "npx prettier --check .",
+    "lint": "npx eslint . --report-unused-disable-directives --max-warnings=0",
+    "test:unit": "npm run build && npx jest --config packages/tests/jest.config.unit.js",
+    "test:unit:watch": "npx jest --config packages/tests/jest.config.unit.ts.js --watch",
+    "test:it": "npm run build && npx jest --detectOpenHandles --config packages/tests/jest.config.it.js",
+    "prisma": "cd packages/infrastructure/relationaldb/prisma && node ./run-prisma-command.js",
+    "clean-template": "npm run build:clean && rimraf **/.env && rimraf package-lock.json && rimraf **/node_modules",
+    "pub": "npm run build && node version-copier.js && npm run pub:core && npm run pub:data-validations",
+    "pub:core": "cd packages/core && npm run pub",
+    "pub:data-validations": "cd packages/infrastructure/data-validations && npm run pub",
+    "dev-link": "npm run dev-link:core && npm run dev-link:data-validations",
+    "dev-link:core": "cd packages/core && npm link",
+    "dev-link:data-validations": "cd packages/infrastructure/data-validations && npm link"
+  },
+  "workspaces": [
+    "packages/**/*"
+  ],
+  "dependencies": {
+    "@pinkyring-server-template/apps_api-graphql": "*",
+    "@pinkyring-server-template/apps_api-rest": "*",
+    "@pinkyring-server-template/apps_cron-jobs": "*",
+    "@pinkyring-server-template/apps_event-handlers": "*",
+    "@pinkyring-server-template/core": "*",
+    "@pinkyring-server-template/di-container": "*",
+    "@pinkyring-server-template/infrastructure_aws_lambdas": "*",
+    "@pinkyring-server-template/infrastructure_aws_snqs": "*",
+    "@pinkyring-server-template/infrastructure_data-validations": "*",
+    "@pinkyring-server-template/infrastructure_queue": "*",
+    "@pinkyring-server-template/infrastructure_relationaldb": "*",
+    "@pinkyring-server-template/infrastructure_util": "*"
+  },
+  "devDependencies": {
+    "@pinkyring-server-template/tests": "*",
+    "@typescript-eslint/eslint-plugin": "^5.41.0",
+    "eslint": "^8.26.0",
+    "prettier": "2.7.1",
+    "rimraf": "^3.0.2",
+    "typescript": "^4.8.4"
+  }
+}

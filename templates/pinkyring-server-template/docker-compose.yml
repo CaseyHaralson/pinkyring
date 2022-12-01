@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  mysql:
+    container_name: mysql
+    image: mysql:8.0.31
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    ports:
+      - 3306:3306
+    volumes:
+      - mysql:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
+
+  mysql-adminer:
+    container_name: mysql.adminer
+    depends_on:
+      mysql:
+        condition: service_started
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+  
+  # .pinkyring=EVENT_SYSTEM
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:3.11.2-management-alpine
+    restart: always
+    hostname: 'persistmydata' # https://stackoverflow.com/questions/41330514/docker-rabbitmq-persistency
+    ports:
+      - 5672:5672     # service endpoint
+      - 15672:15672   # management interface
+    volumes:
+      - rabbitmq:/var/lib/rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+  # .pinkyring=EVENT_SYSTEM.end
+
+volumes:
+  mysql:
+  # .pinkyring=EVENT_SYSTEM
+  rabbitmq:
+  # .pinkyring=EVENT_SYSTEM.end

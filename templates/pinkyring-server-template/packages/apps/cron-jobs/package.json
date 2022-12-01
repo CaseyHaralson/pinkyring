@@ -1,0 +1,16 @@
+{
+  "name": "@pinkyring-server-template/apps_cron-jobs",
+  "main": "build/app.js",
+  "scripts": {
+    "build": "tsc -b",
+    "start": "node ."
+  },
+  "dependencies": {
+    "@pinkyring-server-template/core": "*",
+    "@pinkyring-server-template/di-container": "*",
+    "node-cron": "^3.0.2"
+  },
+  "devDependencies": {
+    "@types/node-cron": "^3.0.6"
+  }
+}

@@ -1,0 +1,124 @@
+service: pinkyring-server-template
+
+provider:
+  name: aws
+  region: us-east-1
+  stage: qat  # environment type from core/util/configHelper
+  stackName: ${self:provider.stage}-${self:service}
+  timeout: 29
+  vpc:
+    securityGroupIds:
+      - !Ref PublicSecurityGroup
+    subnetIds:
+      - !Ref SubnetAPublic
+      - !Ref SubnetBPublic
+  environment:
+    NODE_ENV: ${self:provider.stage}
+    MYSQL_DATABASE_URL:
+      Fn::Join:
+        - ''
+        - - 'mysql://'
+          - ${self:custom.DB_USERNAME}
+          - ':'
+          - ${self:custom.DB_PASSWORD}
+          - '@'
+          - Fn::GetAtt: [AuroraDBCluster, Endpoint.Address]
+          - ':3306/'
+          - ${self:custom.DB_DATABASE_NAME}
+          - '?connection_limit=1'
+          - '&pool_timeout=30'
+    # .pinkyring=EVENT_SYSTEM
+    BLOGPOST_ADDED_TOPIC_ARN: !Ref BlogPostAddedTopic
+    # .pinkyring=EVENT_SYSTEM.end
+    IDEMPOTENT_REQUESTS_CLEAN_OLDERTHAN_HOURS: '24'
+    IDEMPOTENT_REQUESTS_TIMEDOUT_SECONDS: '40'
+  ecr:
+    images:
+      db-migration-runner:
+        # this relies on the prisma folder existing in the same directory
+        # the github deploy action includes a step that handles copying the prisma folder
+        path: ./serverless/dbmigration/
+  iam:
+    role:
+      statements:
+        # .pinkyring=EVENT_SYSTEM
+        - Effect: Allow
+          Action: SNS:Publish
+          Resource: '*'
+        # .pinkyring=EVENT_SYSTEM.end
+
+custom:
+  # the following should come from a secrets store
+  # also, these will show up in the environment variables for the lambda
+  # so make sure whoever can view the lambda config should be able to see this data
+  # ================================
+  DB_USERNAME: root
+  DB_PASSWORD: example!
+  # ================================
+  DB_DATABASE_NAME: pinkyringservertemplate   # must start with a letter and can only be alphanumeric
+  DB_AUTOPAUSE: true
+  DB_CAPACITY_MIN: 1
+  DB_CAPACITY_MAX: 1
+  DBClusterARN:
+    Fn::Join:
+      - ':'
+      - - 'arn:aws:rds'
+        - Ref: 'AWS::Region'
+        - Ref: 'AWS::AccountId'
+        - 'cluster'
+        - !Ref AuroraDBCluster
+
+# function names are built like <project name>-<environment>-<function>
+# the function name can be a max of 64 chars
+functions:
+  # .pinkyring=GRAPHQL
+  graphql:
+    handler: ./packages/infrastructure/aws/lambdas/build/graphql/server.graphqlHandler
+    events:
+      - httpApi:
+          path: /graphql
+          method: GET
+      - httpApi:
+          path: /graphql
+          method: POST
+  # .pinkyring=GRAPHQL.end
+  
+  DBMigration:
+    image:
+      name: db-migration-runner
+  
+  # .pinkyring=EVENT_SYSTEM
+  blogPostAddedEventHandler:
+    handler: ./packages/infrastructure/aws/lambdas/build/events/blogPostAdded.handler
+    events:
+      - sqs: 
+          arn: 
+            Fn::GetAtt: [BlogPostAddedQueue, Arn]
+  # .pinkyring=EVENT_SYSTEM.end
+  
+  # .pinkyring=CRON_JOBS
+  cleanOldIdempotentRequests:
+    handler: ./packages/infrastructure/aws/lambdas/build/maintenance/cleanOldIdempotentRequests.handler
+    events:
+      - schedule: cron(0 1 * * ? *)
+  # .pinkyring=CRON_JOBS.end
+
+resources:
+  - ${file(serverless/resources/vpc.yml)}
+  - ${file(serverless/resources/rds.yml)}
+  # .pinkyring=EVENT_SYSTEM
+  - ${file(serverless/resources/queue.yml)}
+  # .pinkyring=EVENT_SYSTEM.end
+
+package:
+  patterns:
+    - '!node_modules/.prisma/client/libquery_engine-*'
+    - 'node_modules/.prisma/client/libquery_engine-rhel-*'
+    - '!node_modules/prisma/libquery_engine-*'
+    - '!node_modules/@prisma/engines/**'
+    - '!.github'
+    - '!docker'
+    - '!serverless'
+    - '!packages/**'
+    - 'packages/**/build/**/*.js'
+    - '!package-lock.json'

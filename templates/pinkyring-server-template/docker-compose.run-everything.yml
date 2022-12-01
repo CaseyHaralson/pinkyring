@@ -1,0 +1,164 @@
+version: '3.8'
+
+services:
+  mysql:
+    container_name: mysql
+    image: mysql:8.0.31
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    ports:
+      - 3306:3306
+    volumes:
+      - mysql:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
+
+  mysql-adminer:
+    container_name: mysql.adminer
+    depends_on:
+      mysql:
+        condition: service_started
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+  
+  # .pinkyring=EVENT_SYSTEM
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:3.11.2-management-alpine
+    restart: always
+    hostname: 'persistmydata' # https://stackoverflow.com/questions/41330514/docker-rabbitmq-persistency
+    ports:
+      - 5672:5672     # service endpoint
+      - 15672:15672   # management interface
+    volumes:
+      - rabbitmq:/var/lib/rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+  # .pinkyring=EVENT_SYSTEM.end
+  
+  # waits for the db to be available then runs migrations and seeds the database
+  prisma:
+    container_name: prisma.stops-after-running
+    depends_on:
+      mysql:
+        condition: service_started
+    build:
+      context: ./docker
+      dockerfile: Dockerfile.prisma
+    working_dir: /code
+    volumes:
+      - ./:/code
+    environment:
+      MYSQL_DATABASE_URL: ${MYSQL_DATABASE_URL_DOCKER}
+  
+  # .pinkyring=GRAPHQL
+  app-api-graphql:
+    container_name: app.api-graphql
+    depends_on:
+      mysql:
+        condition: service_started
+      # .pinkyring=EVENT_SYSTEM
+      rabbitmq:
+        condition: service_started
+      # .pinkyring=EVENT_SYSTEM.end
+      prisma:
+        condition: service_completed_successfully
+    build:
+      context: ./docker
+      dockerfile: Dockerfile.app
+    ports:
+      - ${APPS_GRAPHQL_PORT}:${APPS_GRAPHQL_PORT}
+    working_dir: /code/packages/apps/api-graphql
+    volumes:
+      - ./:/code
+    environment:
+      MYSQL_DATABASE_URL: ${MYSQL_DATABASE_URL_DOCKER}
+      # .pinkyring=EVENT_SYSTEM
+      RABBITMQ_URL: ${RABBITMQ_URL_DOCKER}
+      # .pinkyring=EVENT_SYSTEM.end
+  # .pinkyring=GRAPHQL.end
+  
+  # .pinkyring=REST_ENDPOINTS
+  app-api-rest:
+    container_name: app.api-rest
+    depends_on:
+      mysql:
+        condition: service_started
+      # .pinkyring=EVENT_SYSTEM
+      rabbitmq:
+        condition: service_started
+      # .pinkyring=EVENT_SYSTEM.end
+      prisma:
+        condition: service_completed_successfully
+    build:
+      context: ./docker
+      dockerfile: Dockerfile.app
+    ports:
+      - ${APPS_EXPRESS_PORT}:${APPS_EXPRESS_PORT}
+    working_dir: /code/packages/apps/api-rest
+    volumes:
+      - ./:/code
+    environment:
+      MYSQL_DATABASE_URL: ${MYSQL_DATABASE_URL_DOCKER}
+      # .pinkyring=EVENT_SYSTEM
+      RABBITMQ_URL: ${RABBITMQ_URL_DOCKER}
+      # .pinkyring=EVENT_SYSTEM.end
+  # .pinkyring=REST_ENDPOINTS.end
+  
+  # .pinkyring=CRON_JOBS
+  app-cron-jobs:
+    container_name: app.cron-jobs
+    depends_on:
+      mysql:
+        condition: service_started
+      # .pinkyring=EVENT_SYSTEM
+      rabbitmq:
+        condition: service_started
+      # .pinkyring=EVENT_SYSTEM.end
+      prisma:
+        condition: service_completed_successfully
+    build:
+      context: ./docker
+      dockerfile: Dockerfile.app
+    working_dir: /code/packages/apps/cron-jobs
+    volumes:
+      - ./:/code
+    environment:
+      MYSQL_DATABASE_URL: ${MYSQL_DATABASE_URL_DOCKER}
+      # .pinkyring=EVENT_SYSTEM
+      RABBITMQ_URL: ${RABBITMQ_URL_DOCKER}
+      # .pinkyring=EVENT_SYSTEM.end
+    # can start immediately, so needs to wait on mysql to startup before running
+    command: ../../../docker/wait-for.sh mysql:3306 -t 120 -- npm run start
+  # .pinkyring=CRON_JOBS.end
+
+  # .pinkyring=EVENT_SYSTEM
+  app-event-handlers:
+    container_name: app.event-handlers
+    depends_on:
+      mysql:
+        condition: service_started
+      rabbitmq:
+        condition: service_started
+      prisma:
+        condition: service_completed_successfully
+    build:
+      context: ./docker
+      dockerfile: Dockerfile.app
+    working_dir: /code/packages/apps/event-handlers
+    volumes:
+      - ./:/code
+    environment:
+      MYSQL_DATABASE_URL: ${MYSQL_DATABASE_URL_DOCKER}
+      RABBITMQ_URL: ${RABBITMQ_URL_DOCKER}
+    # starts immediately, so needs to wait on rabbitmq to startup before running
+    command: ../../../docker/wait-for.sh rabbitmq:5672 -t 120 -- npm run start
+  # .pinkyring=EVENT_SYSTEM.end
+
+volumes:
+  mysql:
+  # .pinkyring=EVENT_SYSTEM
+  rabbitmq:
+  # .pinkyring=EVENT_SYSTEM.end

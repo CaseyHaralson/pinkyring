@@ -1,0 +1,71 @@
+name: Serverless Deploy
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Serverless Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: '☁️ checkout repository'
+        uses: actions/checkout@v3
+        timeout-minutes: 1
+
+      - name: '🔧 setup node'
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+        timeout-minutes: 1
+
+      - name: '📦 install dependencies'
+        uses: bahmutov/npm-install@1a235c31658a322a3b024444759650ee6345c26d
+        timeout-minutes: 1
+
+      - name: '📦 build project'
+        run: npm run build
+        timeout-minutes: 1
+      
+      - name: '📦 install prune'
+        run: 'curl -sf https://gobinaries.com/tj/node-prune | sh'
+        timeout-minutes: 1
+      
+      - name: '📦 prune dependencies'
+        run: 'node-prune'
+        timeout-minutes: 1
+
+      - name: '📦 install serverless'
+        run: npm i -g serverless
+        timeout-minutes: 1
+
+      - name: '🔧 setup serverless'
+        run: serverless config credentials --provider aws --key ${{ secrets.AWS_ACCESS_KEY_ID }} --secret ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        timeout-minutes: 1
+
+      # generate the prisma files that will be needed for db migration
+      - name: '🔧 setup prisma - generate'
+        run: npm run prisma generate
+        timeout-minutes: 1
+
+      # copy the prisma files that were generated in an earlier step
+      - name: '🔧 pre serverless deploy - copy files'
+        run: cp -r packages/infrastructure/relationaldb/prisma serverless/dbmigration/prisma
+        timeout-minutes: 1
+
+      - name: '☁️ serverless deploy'
+        run: serverless deploy
+      
+      - name: '☁️ db migration - call lambda (db might be asleep)'
+        id: db-migrate-1
+        run: serverless invoke --function DBMigration
+        continue-on-error: true
+      
+      - name: '🔧 db migration - sleep for a bit to let the database wake up'
+        if: steps.db-migrate-1.outcome != 'success'
+        run: sleep 50s
+        shell: bash
+      
+      - name: '☁️ db migration - call lambda 2nd time (db should be awake)'
+        id: db-migrate-2
+        if: steps.db-migrate-1.outcome != 'success'
+        run: serverless invoke --function DBMigration

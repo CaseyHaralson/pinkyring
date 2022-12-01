@@ -1,0 +1,24 @@
+{
+  "name": "@pinkyring-server-template/infrastructure_aws_lambdas",
+  "exports": {
+    "./*": "./build/*.js"
+  },
+  "typesVersions": {
+    "*": {
+      "*": [
+        "build/*"
+      ]
+    }
+  },
+  "dependencies": {
+    "@apollo/server": "^4.1.1",
+    "@as-integrations/aws-lambda": "^1.0.1",
+    "@pinkyring-server-template/core": "*",
+    "@pinkyring-server-template/di-container": "*",
+    "dataloader": "^2.1.0",
+    "graphql": "^16.6.0"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.108"
+  }
+}

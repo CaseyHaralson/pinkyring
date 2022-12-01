@@ -1,0 +1,20 @@
+{
+  "name": "@pinkyring-server-template/core",
+  "exports": {
+    "./*": "./build/*.js"
+  },
+  "typesVersions": {
+    "*": {
+      "*": [
+        "build/*"
+      ]
+    }
+  },
+  "files": [
+    "build/dtos",
+    "build/interfaces"
+  ],
+  "scripts": {
+    "pub": "echo \"implement publish command in the core package\""
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "name": "@pinkyring-server-template/infrastructure_util",
+  "exports": {
+    "./*": "./build/*.js"
+  },
+  "typesVersions": {
+    "*": {
+      "*": [
+        "build/*"
+      ]
+    }
+  },
+  "dependencies": {
+    "@pinkyring-server-template/core": "*",
+    "cls-hooked": "^4.2.2",
+    "dotenv": "^16.0.3",
+    "find-up": "^5.0.0",
+    "uuid": "^9.0.0",
+    "winston": "^3.8.2"
+  },
+  "devDependencies": {
+    "@types/cls-hooked": "^4.3.3",
+    "@types/uuid": "^9.0.0"
+  }
+}

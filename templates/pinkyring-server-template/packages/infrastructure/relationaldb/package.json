@@ -1,0 +1,30 @@
+{
+  "name": "@pinkyring-server-template/infrastructure_relationaldb",
+  "prisma": {
+    "seed": "node prisma/seed.js"
+  },
+  "scripts": {
+    "prisma:env": "cd ../../../ && npx copyfiles .env packages/infrastructure/relationaldb",
+    "prisma:env:remove": "npx rimraf .env"
+  },
+  "exports": {
+    "./*": "./build/*.js"
+  },
+  "typesVersions": {
+    "*": {
+      "*": [
+        "build/*"
+      ]
+    }
+  },
+  "dependencies": {
+    "@pinkyring-server-template/core": "*",
+    "@prisma/client": "^4.5.0"
+  },
+  "devDependencies": {
+    "copyfiles": "^2.4.1",
+    "prisma": "^4.5.0",
+    "rimraf": "^3.0.2",
+    "shelljs": "^0.8.5"
+  }
+}

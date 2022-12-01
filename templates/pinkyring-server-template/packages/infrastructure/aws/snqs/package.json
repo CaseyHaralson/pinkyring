@@ -1,0 +1,18 @@
+{
+  "name": "@pinkyring-server-template/infrastructure_aws_snqs",
+  "exports": {
+    "./*": "./build/*.js"
+  },
+  "typesVersions": {
+    "*": {
+      "*": [
+        "build/*"
+      ]
+    }
+  },
+  "dependencies": {
+    "@aws-sdk/client-sns": "^3.216.0",
+    "@aws-sdk/client-sqs": "^3.216.0",
+    "@pinkyring-server-template/core": "*"
+  }
+}

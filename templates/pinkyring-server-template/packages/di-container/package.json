@@ -1,0 +1,22 @@
+{
+  "name": "@pinkyring-server-template/di-container",
+  "exports": {
+    "./*": "./build/*.js"
+  },
+  "typesVersions": {
+    "*": {
+      "*": [
+        "build/*"
+      ]
+    }
+  },
+  "dependencies": {
+    "@pinkyring-server-template/core": "*",
+    "@pinkyring-server-template/infrastructure_aws_snqs": "*",
+    "@pinkyring-server-template/infrastructure_data-validations": "*",
+    "@pinkyring-server-template/infrastructure_queue": "*",
+    "@pinkyring-server-template/infrastructure_relationaldb": "*",
+    "@pinkyring-server-template/infrastructure_util": "*",
+    "awilix": "^8.0.0"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "name": "@pinkyring-server-template/infrastructure_data-validations",
+  "exports": {
+    "./*": "./build/*.js"
+  },
+  "typesVersions": {
+    "*": {
+      "*": [
+        "build/*"
+      ]
+    }
+  },
+  "dependencies": {
+    "@pinkyring-server-template/core": "*",
+    "yup": "^1.0.0-beta.8"
+  },
+  "files": [
+    "build"
+  ],
+  "scripts": {
+    "pub": "echo \"implement publish command in the data-validations package\""
+  }
+}

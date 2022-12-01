@@ -1,0 +1,15 @@
+docker/Dockerfile*
+.dockerignore
+docker-compose*
+
+npm-debug.log
+README.md
+.next
+.git
+.github
+
+**/node_modules
+**/build
+**/tsconfig.tsbuildinfo
+
+**/.env

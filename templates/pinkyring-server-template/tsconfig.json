@@ -1,0 +1,56 @@
+{
+  "compilerOptions": {
+    "target": "es2019",
+    "module": "commonjs",
+    "declaration": true,
+    "sourceMap": false,
+    "strict": true,
+    "moduleResolution": "NodeNext",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true
+  },
+  "references": [
+    {
+      "path": "./packages/apps/api-graphql"
+    },
+    {
+      "path": "./packages/apps/api-rest"
+    },
+    {
+      "path": "./packages/apps/cron-jobs"
+    },
+    {
+      "path": "./packages/apps/event-handlers"
+    },
+    {
+      "path": "./packages/core"
+    },
+    {
+      "path": "./packages/di-container"
+    },
+    {
+      "path": "./packages/infrastructure/aws/lambdas"
+    },
+    {
+      "path": "./packages/infrastructure/aws/snqs"
+    },
+    {
+      "path": "./packages/infrastructure/data-validations"
+    },
+    {
+      "path": "./packages/infrastructure/queue"
+    },
+    {
+      "path": "./packages/infrastructure/relationaldb"
+    },
+    {
+      "path": "./packages/infrastructure/util"
+    },
+    {
+      "path": "./packages/tests"
+    }
+  ],
+  "files": []
+}
