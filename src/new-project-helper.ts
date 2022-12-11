@@ -48,6 +48,7 @@ export function promptForNewProject() {
     } as TemplateData;
 
     createNewProject(projectName, templatePath, templateData);
+    console.log(chalk.green("New project created."));
   });
 }
 

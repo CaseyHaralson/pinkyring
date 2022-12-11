@@ -46,6 +46,7 @@ function promptForNewProject() {
             selectedTemplate: templateChoice,
         };
         createNewProject(projectName, templatePath, templateData);
+        console.log(chalk_1.default.green("New project created."));
     });
 }
 exports.promptForNewProject = promptForNewProject;
