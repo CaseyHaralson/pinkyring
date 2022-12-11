@@ -1,0 +1,114 @@
+name: Continuous Integration Checks
+
+on:
+  pull_request:
+    types:
+      - opened
+      - edited
+      - synchronize
+      - reopened
+  workflow_call:
+
+env:
+  MYSQL_DATABASE: <%= projectName %>
+  MYSQL_USER: root
+  MYSQL_ROOT_PASSWORD: example
+  RABBITMQ_DEFAULT_USER: guest
+  RABBITMQ_DEFAULT_PASS: guest
+
+jobs:
+  unit-test:
+    name: Unit test application
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: '☁️ checkout repository'
+        uses: actions/checkout@v3
+
+      - name: '🔧 setup node'
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: '📦 install dependencies'
+        uses: bahmutov/npm-install@v1
+
+      - name: '🔍 run unit tests'
+        run: npm run test:unit --if-present
+
+  integration-test:
+    name: Integration test application
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ROOT_PASSWORD: ${{env.MYSQL_ROOT_PASSWORD}}
+        ports:
+          - 3306:3306
+      rabbitmq:
+        image: rabbitmq:3.11-alpine
+        env:
+          RABBITMQ_DEFAULT_USER: ${{env.RABBITMQ_DEFAULT_USER}}
+          RABBITMQ_DEFAULT_PASS: ${{env.RABBITMQ_DEFAULT_PASS}}
+        ports:
+          - 5672:5672
+    steps:
+      - name: '☁️ checkout repository'
+        uses: actions/checkout@v3
+
+      - name: '🔧 setup node'
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: '🔧 create env file'
+        uses: SpicyPizza/create-envfile@v1.3
+        with:
+          envkey_NODE_ENV: 'test'
+          envkey_MYSQL_DATABASE_URL: mysql://${{env.MYSQL_USER}}:${{env.MYSQL_ROOT_PASSWORD}}@127.0.0.1:3306/${{env.MYSQL_DATABASE}}
+          envkey_RABBITMQ_URL: amqp://${{env.RABBITMQ_DEFAULT_USER}}:${{env.RABBITMQ_DEFAULT_PASS}}@127.0.0.1:5672
+          envkey_IDEMPOTENT_REQUESTS_CLEAN_OLDERTHAN_HOURS: '24'
+          envkey_IDEMPOTENT_REQUESTS_TIMEDOUT_SECONDS: '60'
+
+      - name: '📦 install dependencies'
+        uses: bahmutov/npm-install@v1
+
+      - name: '🔧 setup prisma - generate'
+        run: npm run prisma generate
+
+      - name: '🔧 setup prisma - migrate'
+        run: npm run prisma migrate deploy
+
+      - name: '🔧 setup prisma - seed'
+        run: npm run prisma db seed
+
+      - name: '🔍 run integration tests'
+        run: npm run test:it --if-present
+
+  style-and-lint:
+    name: Code standards
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: '☁️ checkout repository'
+        uses: actions/checkout@v3
+
+      - name: '🔧 setup node'
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: '🔧 install npm@latest'
+        run: npm i -g npm@latest
+
+      - name: '📦 install dependencies'
+        uses: bahmutov/npm-install@v1
+
+      - name: '🔍 prettier check code'
+        run: npm run prettier:check --if-present
+
+      - name: '🔍 lint code'
+        if: success() || failure()
+        run: npm run lint --if-present

@@ -1,0 +1,12 @@
+{
+  "name": "@<%= projectName %>/apps_event-handlers",
+  "main": "build/app.js",
+  "scripts": {
+    "build": "tsc -b",
+    "start": "node ."
+  },
+  "dependencies": {
+    "@<%= projectName %>/core": "*",
+    "@<%= projectName %>/di-container": "*"
+  }
+}

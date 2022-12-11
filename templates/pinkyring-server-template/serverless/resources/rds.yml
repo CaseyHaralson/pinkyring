@@ -1,0 +1,46 @@
+Resources:
+  DBSubnetGroup:
+    Type: AWS::RDS::DBSubnetGroup
+    Properties:
+      DBSubnetGroupDescription: ${self:provider.stackName}-DBSubnetGroup
+      SubnetIds:
+        - !Ref SubnetAPrivate
+        - !Ref SubnetBPrivate
+      Tags:
+      - Key: Name
+        Value: ${self:provider.stackName}-DBSubnetGroup
+
+  DBClusterSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: !Ref 'AWS::StackName'
+      VpcId: !Ref VPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: '3306'
+          ToPort: '3306'
+          CidrIp: '10.0.0.0/16'
+      Tags:
+      - Key: Name
+        Value: ${self:provider.stackName}-AuroraClusterSecurityGroup
+  
+  AuroraDBCluster:
+    Type: AWS::RDS::DBCluster
+    Properties:
+      MasterUsername: ${self:custom.DB_USERNAME}
+      MasterUserPassword: ${self:custom.DB_PASSWORD}
+      DatabaseName: ${self:custom.DB_DATABASE_NAME}
+      Engine: aurora-mysql
+      EngineMode: serverless
+      EngineVersion: '5.7'
+      EnableHttpEndpoint: true
+      DBSubnetGroupName: !Ref DBSubnetGroup
+      VpcSecurityGroupIds:
+      - !Ref DBClusterSecurityGroup  
+      ScalingConfiguration:
+        AutoPause: ${self:custom.DB_AUTOPAUSE}
+        MinCapacity: ${self:custom.DB_CAPACITY_MIN}
+        MaxCapacity: ${self:custom.DB_CAPACITY_MAX}
+      Tags:
+      - Key: Name
+        Value: ${self:provider.stackName}-AuroraDBCluster

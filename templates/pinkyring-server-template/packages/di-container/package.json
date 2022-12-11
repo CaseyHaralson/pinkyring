@@ -1,0 +1,22 @@
+{
+  "name": "@<%= projectName %>/di-container",
+  "exports": {
+    "./*": "./build/*.js"
+  },
+  "typesVersions": {
+    "*": {
+      "*": [
+        "build/*"
+      ]
+    }
+  },
+  "dependencies": {
+    "@<%= projectName %>/core": "*",
+    "@<%= projectName %>/infrastructure_aws_snqs": "*",
+    "@<%= projectName %>/infrastructure_data-validations": "*",
+    "@<%= projectName %>/infrastructure_queue": "*",
+    "@<%= projectName %>/infrastructure_relationaldb": "*",
+    "@<%= projectName %>/infrastructure_util": "*",
+    "awilix": "^8.0.0"
+  }
+}

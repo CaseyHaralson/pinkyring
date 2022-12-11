@@ -1,0 +1,20 @@
+{
+  "name": "@<%= projectName %>/infrastructure_queue",
+  "exports": {
+    "./*": "./build/*.js"
+  },
+  "typesVersions": {
+    "*": {
+      "*": [
+        "build/*"
+      ]
+    }
+  },
+  "dependencies": {
+    "@<%= projectName %>/core": "*",
+    "amqplib": "^0.10.3"
+  },
+  "devDependencies": {
+    "@types/amqplib": "^0.10.0"
+  }
+}

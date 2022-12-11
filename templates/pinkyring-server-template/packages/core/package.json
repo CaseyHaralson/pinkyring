@@ -1,0 +1,13 @@
+{
+  "name": "@<%= projectName %>/core",
+  "exports": {
+    "./*": "./build/*.js"
+  },
+  "typesVersions": {
+    "*": {
+      "*": [
+        "build/*"
+      ]
+    }
+  }
+}

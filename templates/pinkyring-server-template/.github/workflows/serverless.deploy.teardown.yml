@@ -1,0 +1,26 @@
+name: Serverless Deploy - Teardown
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy-teardown:
+    name: Serverless Deploy - Teardown
+    runs-on: ubuntu-latest
+    steps:
+      - name: '☁️ checkout repository'
+        uses: actions/checkout@v3
+
+      - name: '🔧 setup node'
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: '📦 install serverless'
+        run: npm i -g serverless
+
+      - name: '🔧 setup serverless'
+        run: serverless config credentials --provider aws --key ${{ secrets.AWS_ACCESS_KEY_ID }} --secret ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - name: '☁️ serverless remove'
+        run: serverless remove

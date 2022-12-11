@@ -1,0 +1,79 @@
+Resources:
+  BlogPostAddedTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: 'BlogPostAdded.fifo'
+      FifoTopic: true
+      ContentBasedDeduplication: true
+      Subscription:
+        - Protocol: sqs
+          Endpoint: !GetAtt BlogPostAddedQueue.Arn
+      Tags:
+      - Key: Name
+        Value: ${self:provider.stackName}-BlogPostAddedTopic
+
+  BlogPostAddedQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: 'BlogPostAddedQueue.fifo'
+      FifoQueue: true
+      ContentBasedDeduplication: true
+      RedrivePolicy:
+        deadLetterTargetArn: !GetAtt BlogPostAddedDLQ.Arn
+        maxReceiveCount: 3
+      Tags:
+      - Key: Name
+        Value: ${self:provider.stackName}-BlogPostAddedQueue
+  
+  BlogPostAddedDLQ:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: 'BlogPostAddedDLQ.fifo'
+      FifoQueue: true
+      ContentBasedDeduplication: true
+      Tags:
+      - Key: Name
+        Value: ${self:provider.stackName}-BlogPostAddedDLQ
+
+  BlogPostAddedSNStoSQSPolicy:
+    Type: AWS::SQS::QueuePolicy
+    Properties:
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: 'Allow SNS publish to SQS'
+            Effect: Allow
+            Principal:
+              Service: 'sns.amazonaws.com'
+            Resource: !GetAtt BlogPostAddedQueue.Arn
+            Action: SQS:SendMessage
+            Condition:
+              ArnEquals:
+                aws:SourceArn: !Ref BlogPostAddedTopic
+      Queues:
+        - Ref: BlogPostAddedQueue
+  
+  SNSSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: !Ref 'AWS::StackName'
+      VpcId: !Ref VPC
+      SecurityGroupIngress:
+        - IpProtocol: '-1'
+          CidrIp: '10.0.0.0/16'
+      Tags:
+      - Key: Name
+        Value: ${self:provider.stackName}-SNSSecurityGroup
+
+  SNSEndpoint:
+    Type: AWS::EC2::VPCEndpoint
+    Properties:
+      PrivateDnsEnabled: true
+      ServiceName: com.amazonaws.${self:provider.region}.sns
+      SecurityGroupIds:
+        - !Ref SNSSecurityGroup
+      SubnetIds:
+        - !Ref SubnetAPrivate
+        - !Ref SubnetBPrivate
+      VpcEndpointType: Interface
+      VpcId: !Ref VPC
