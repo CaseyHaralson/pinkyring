@@ -4,13 +4,7 @@
     "target": "ESNext",
     "esModuleInterop": true,
     //"rootDir": "./src",
-    "outDir": "./dist",
-    "baseUrl": "src",
-    "paths": {
-      "@server-template/*": [
-        "../templates/pinkyring-server-template/.pinkyring/*"
-      ]
-    }
+    "outDir": "./dist"
   },
   //"exclude": ["templates"],
   "include": ["src", "templates/**/.pinkyring"]

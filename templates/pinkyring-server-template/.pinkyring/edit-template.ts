@@ -18,7 +18,7 @@ const QUESTIONS = [
   },
 ];
 
-export function editTemplatePrompt() {
+export function editTemplate() {
   inquirer.prompt(QUESTIONS).then((answers: Answers) => {
     const action = answers["action"];
     console.log(chalk.green(`chosen action from project script: ${action}`));
