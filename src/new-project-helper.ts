@@ -12,10 +12,10 @@ const QUESTIONS = [
     type: "list",
     message: "What project template would you like to generate?",
     choices: CHOICES,
-    when: () => {
-      if (CHOICES.length === 1) return false;
-      return true;
-    },
+    // when: () => {
+    //   if (CHOICES.length === 1) return false;
+    //   return true;
+    // },
   },
   {
     name: "project-name",
@@ -90,14 +90,18 @@ function createDirectoryContents(
       const writePath = path.join(CURR_DIR, newProjectPath, file);
       fs.writeFileSync(writePath, fileContents, "utf8");
     } else if (fileStats.isDirectory()) {
-      fs.mkdirSync(path.join(CURR_DIR, newProjectPath, file));
+      // don't copy the .pinkyring folder
+      // otherwise, copy the folder and all its contents
+      if (file !== ".pinkyring") {
+        fs.mkdirSync(path.join(CURR_DIR, newProjectPath, file));
 
-      // recursively make new contents
-      createDirectoryContents(
-        path.join(templatePath, file),
-        path.join(newProjectPath, file),
-        templateData
-      );
+        // recursively make new contents
+        createDirectoryContents(
+          path.join(templatePath, file),
+          path.join(newProjectPath, file),
+          templateData
+        );
+      }
     }
   });
 }

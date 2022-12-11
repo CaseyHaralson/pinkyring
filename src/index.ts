@@ -1,4 +1,5 @@
 import inquirer, { Answers } from "inquirer";
+import { findTemplateAndRunEdit } from "./edit-project-helper";
 import { promptForNewProject } from "./new-project-helper";
 
 const ACTION_NEW_PROJECT = "Create new project";
@@ -18,6 +19,6 @@ inquirer.prompt(QUESTIONS).then((answers: Answers) => {
   if (action === ACTION_NEW_PROJECT) {
     promptForNewProject();
   } else if (action === ACTION_EDIT_PROJECT) {
-    //
+    findTemplateAndRunEdit();
   }
 });
