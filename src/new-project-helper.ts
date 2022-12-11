@@ -5,7 +5,7 @@ import {render, TemplateData} from './template-helper';
 import inquirer, {Answers} from 'inquirer';
 
 const CURR_DIR = process.cwd();
-const CHOICES = fs.readdirSync(path.join(__dirname, '..', 'templates'));
+const CHOICES = fs.readdirSync(path.join(__dirname, '..', '..', 'templates'));
 const QUESTIONS = [
   {
     name: 'template-choice',
@@ -38,6 +38,7 @@ export function promptForNewProject() {
     const templatePath = path.join(
       __dirname,
       '..',
+      '..',
       'templates',
       templateChoice
     );
@@ -47,8 +48,12 @@ export function promptForNewProject() {
       selectedTemplate: templateChoice,
     } as TemplateData;
 
-    createNewProject(projectName, templatePath, templateData);
-    console.log(chalk.green('New project created.'));
+    const newProjectCreated = createNewProject(
+      projectName,
+      templatePath,
+      templateData
+    );
+    if (newProjectCreated) console.log(chalk.green('New project created.'));
   });
 }
 
@@ -72,6 +77,8 @@ function createNewProject(
   createDirectoryContents(templatePath, newProjectName, templateData);
   //createPinkyringFile(newProjectPath, templateData);
   copyPinkyringFile(templatePath, newProjectPath);
+
+  return true;
 }
 
 function createDirectoryContents(

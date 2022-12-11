@@ -10,7 +10,7 @@ const chalk_1 = __importDefault(require("chalk"));
 const template_helper_1 = require("./template-helper");
 const inquirer_1 = __importDefault(require("inquirer"));
 const CURR_DIR = process.cwd();
-const CHOICES = fs_1.default.readdirSync(path_1.default.join(__dirname, '..', 'templates'));
+const CHOICES = fs_1.default.readdirSync(path_1.default.join(__dirname, '..', '..', 'templates'));
 const QUESTIONS = [
     {
         name: 'template-choice',
@@ -39,13 +39,14 @@ function promptForNewProject() {
         //console.log(answers);
         const templateChoice = answers['template-choice'] ?? CHOICES[0];
         const projectName = answers['project-name'];
-        const templatePath = path_1.default.join(__dirname, '..', 'templates', templateChoice);
+        const templatePath = path_1.default.join(__dirname, '..', '..', 'templates', templateChoice);
         const templateData = {
             projectName: projectName,
             selectedTemplate: templateChoice,
         };
-        createNewProject(projectName, templatePath, templateData);
-        console.log(chalk_1.default.green('New project created.'));
+        const newProjectCreated = createNewProject(projectName, templatePath, templateData);
+        if (newProjectCreated)
+            console.log(chalk_1.default.green('New project created.'));
     });
 }
 exports.promptForNewProject = promptForNewProject;
@@ -59,6 +60,7 @@ function createNewProject(newProjectName, templatePath, templateData) {
     createDirectoryContents(templatePath, newProjectName, templateData);
     //createPinkyringFile(newProjectPath, templateData);
     copyPinkyringFile(templatePath, newProjectPath);
+    return true;
 }
 function createDirectoryContents(templatePath, newProjectPath, templateData) {
     const filesToCreate = fs_1.default.readdirSync(templatePath);
