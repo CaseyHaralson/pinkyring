@@ -1,7 +1,9 @@
 import fs from 'fs';
 import path from 'path';
 import chalk from 'chalk';
-import {editTemplatePrompt} from './template-options/pinkyring-server-template/edit-template';
+//import {editTemplatePrompt} from './template-options/pinkyring-server-template/edit-template';
+//import {editTemplatePrompt} from '@server-template/edit-template';
+import {editTemplatePrompt} from '../templates/pinkyring-server-template/.pinkyring/edit-template';
 
 // find the .pinkyring file
 // read the template name

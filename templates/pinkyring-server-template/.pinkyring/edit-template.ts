@@ -9,18 +9,18 @@ import inquirer, { Answers } from "inquirer";
 
 // test();
 
-
-
 const QUESTIONS = [
   {
     name: "action",
     type: "list",
     message: "What would you like to do?",
-    choices: ['ACTION_NEW_PROJECT', 'ACTION_EDIT_PROJECT'],
+    choices: ["ACTION_NEW_PROJECT", "ACTION_EDIT_PROJECT"],
   },
 ];
 
-inquirer.prompt(QUESTIONS).then((answers: Answers) => {
-  const action = answers["action"];
-  console.log(`chosen action: ${action}`);
-});
+export function editTemplatePrompt() {
+  inquirer.prompt(QUESTIONS).then((answers: Answers) => {
+    const action = answers["action"];
+    console.log(chalk.green(`chosen action from project script: ${action}`));
+  });
+}

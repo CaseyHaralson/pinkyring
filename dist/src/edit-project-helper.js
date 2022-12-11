@@ -7,7 +7,9 @@ exports.findTemplateAndRunEdit = void 0;
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
 const chalk_1 = __importDefault(require("chalk"));
-const edit_template_1 = require("./template-options/pinkyring-server-template/edit-template");
+//import {editTemplatePrompt} from './template-options/pinkyring-server-template/edit-template';
+//import {editTemplatePrompt} from '@server-template/edit-template';
+const edit_template_1 = require("../templates/pinkyring-server-template/.pinkyring/edit-template");
 // find the .pinkyring file
 // read the template name
 // go to the template
@@ -43,17 +45,17 @@ function findTemplateAndRunEdit() {
 }
 exports.findTemplateAndRunEdit = findTemplateAndRunEdit;
 function findTemplateName() {
-    const pinkyringFilePath = path_1.default.join(CURR_DIR, ".pinkyring");
+    const pinkyringFilePath = path_1.default.join(CURR_DIR, '.pinkyring');
     if (!fs_1.default.existsSync(pinkyringFilePath)) {
         console.log(chalk_1.default.red(`The .pinkyring file couldn't be found. This command needs to be run from inside a project that was created with pinkyring.`));
         return null;
     }
     let templateName = null;
-    const pinkyringContents = fs_1.default.readFileSync(pinkyringFilePath, "utf8");
+    const pinkyringContents = fs_1.default.readFileSync(pinkyringFilePath, 'utf8');
     const lines = pinkyringContents.split(/\r?\n/);
     lines.forEach((line) => {
-        if (line.startsWith("TEMPLATE=")) {
-            templateName = line.replace(`TEMPLATE='`, "").replace(`'`, "");
+        if (line.startsWith('TEMPLATE=')) {
+            templateName = line.replace(`TEMPLATE='`, '').replace(`'`, '');
         }
     });
     return templateName;
