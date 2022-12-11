@@ -1,16 +1,16 @@
-import fs from "fs";
-import path from "path";
-import chalk from "chalk";
-import { render, TemplateData } from "./template-helper";
-import inquirer, { Answers } from "inquirer";
+import fs from 'fs';
+import path from 'path';
+import chalk from 'chalk';
+import {render, TemplateData} from './template-helper';
+import inquirer, {Answers} from 'inquirer';
 
 const CURR_DIR = process.cwd();
-const CHOICES = fs.readdirSync(path.join(__dirname, "..", "templates"));
+const CHOICES = fs.readdirSync(path.join(__dirname, '..', 'templates'));
 const QUESTIONS = [
   {
-    name: "template-choice",
-    type: "list",
-    message: "What project template would you like to generate?",
+    name: 'template-choice',
+    type: 'list',
+    message: 'What project template would you like to generate?',
     choices: CHOICES,
     // when: () => {
     //   if (CHOICES.length === 1) return false;
@@ -18,13 +18,13 @@ const QUESTIONS = [
     // },
   },
   {
-    name: "project-name",
-    type: "input",
-    message: "Project name:",
+    name: 'project-name',
+    type: 'input',
+    message: 'Project name:',
     validate: function (input: string) {
       if (/^([A-Za-z\-\_\d])+$/.test(input)) return true;
       else
-        return "Project name may only include letters, numbers, underscores and dashes.";
+        return 'Project name may only include letters, numbers, underscores and dashes.';
     },
   },
 ];
@@ -33,12 +33,12 @@ export function promptForNewProject() {
   inquirer.prompt(QUESTIONS).then((answers: Answers) => {
     //console.log(answers);
 
-    const templateChoice = answers["template-choice"] ?? CHOICES[0];
-    const projectName = answers["project-name"];
+    const templateChoice = answers['template-choice'] ?? CHOICES[0];
+    const projectName = answers['project-name'];
     const templatePath = path.join(
       __dirname,
-      "..",
-      "templates",
+      '..',
+      'templates',
       templateChoice
     );
 
@@ -48,7 +48,7 @@ export function promptForNewProject() {
     } as TemplateData;
 
     createNewProject(projectName, templatePath, templateData);
-    console.log(chalk.green("New project created."));
+    console.log(chalk.green('New project created.'));
   });
 }
 
@@ -70,7 +70,8 @@ function createNewProject(
 
   fs.mkdirSync(newProjectPath);
   createDirectoryContents(templatePath, newProjectName, templateData);
-  createPinkyringFile(newProjectPath, templateData);
+  //createPinkyringFile(newProjectPath, templateData);
+  copyPinkyringFile(templatePath, newProjectPath);
 }
 
 function createDirectoryContents(
@@ -85,14 +86,14 @@ function createDirectoryContents(
 
     const fileStats = fs.statSync(origFilePath);
     if (fileStats.isFile()) {
-      let fileContents = fs.readFileSync(origFilePath, "utf8");
+      let fileContents = fs.readFileSync(origFilePath, 'utf8');
       fileContents = render(fileContents, templateData);
       const writePath = path.join(CURR_DIR, newProjectPath, file);
-      fs.writeFileSync(writePath, fileContents, "utf8");
+      fs.writeFileSync(writePath, fileContents, 'utf8');
     } else if (fileStats.isDirectory()) {
-      // don't copy the .pinkyring folder
+      // don't copy the .pinkyring-template folder
       // otherwise, copy the folder and all its contents
-      if (file !== ".pinkyring") {
+      if (file !== '.pinkyring-template') {
         fs.mkdirSync(path.join(CURR_DIR, newProjectPath, file));
 
         // recursively make new contents
@@ -110,6 +111,14 @@ function createPinkyringFile(
   newProjectPath: string,
   templateData: TemplateData
 ) {
-  const filePath = path.join(newProjectPath, ".pinkyring");
+  const filePath = path.join(newProjectPath, '.pinkyring');
   fs.writeFileSync(filePath, `TEMPLATE='${templateData.selectedTemplate}'`);
+}
+
+function copyPinkyringFile(templatePath: string, newProjectPath: string) {
+  const filePath = path.join(templatePath, '.pinkyring-template', '.pinkyring');
+  const fileContents = fs.readFileSync(filePath, 'utf8');
+
+  const newFilePath = path.join(newProjectPath, '.pinkyring');
+  fs.writeFileSync(newFilePath, fileContents, 'utf8');
 }

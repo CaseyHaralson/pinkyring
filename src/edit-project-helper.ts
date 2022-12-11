@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import chalk from 'chalk';
-import {editTemplate} from '../templates/pinkyring-server-template/.pinkyring/edit-template';
+import {editTemplate} from '../templates/pinkyring-server-template/.pinkyring-template/src/edit-template';
 
 // find the .pinkyring file
 // read the template name
@@ -57,7 +57,7 @@ function findTemplateName() {
   const lines = pinkyringContents.split(/\r?\n/);
   lines.forEach((line) => {
     if (line.startsWith('TEMPLATE=')) {
-      templateName = line.replace(`TEMPLATE='`, '').replace(`'`, '');
+      templateName = line.replace(`TEMPLATE=`, '');
     }
   });
 
@@ -77,5 +77,5 @@ function runTemplateEditFile(templateName: string) {
   // if (fs.existsSync(editFile)) {
   //   shell.exec(`npx ts-node ${editFile}`);
   // }
-  editTemplate();
+  editTemplate(CURR_DIR);
 }

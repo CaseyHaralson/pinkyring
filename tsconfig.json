@@ -7,5 +7,5 @@
     "outDir": "./dist"
   },
   //"exclude": ["templates"],
-  "include": ["src", "templates/**/.pinkyring"]
+  "include": ["src", "templates/**/.pinkyring-template"]
 }

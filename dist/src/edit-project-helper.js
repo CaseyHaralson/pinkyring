@@ -7,7 +7,7 @@ exports.findTemplateAndRunEdit = void 0;
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
 const chalk_1 = __importDefault(require("chalk"));
-const edit_template_1 = require("../templates/pinkyring-server-template/.pinkyring/edit-template");
+const edit_template_1 = require("../templates/pinkyring-server-template/.pinkyring-template/src/edit-template");
 // find the .pinkyring file
 // read the template name
 // go to the template
@@ -53,7 +53,7 @@ function findTemplateName() {
     const lines = pinkyringContents.split(/\r?\n/);
     lines.forEach((line) => {
         if (line.startsWith('TEMPLATE=')) {
-            templateName = line.replace(`TEMPLATE='`, '').replace(`'`, '');
+            templateName = line.replace(`TEMPLATE=`, '');
         }
     });
     return templateName;
@@ -70,5 +70,5 @@ function runTemplateEditFile(templateName) {
     // if (fs.existsSync(editFile)) {
     //   shell.exec(`npx ts-node ${editFile}`);
     // }
-    (0, edit_template_1.editTemplate)();
+    (0, edit_template_1.editTemplate)(CURR_DIR);
 }

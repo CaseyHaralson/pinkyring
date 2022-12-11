@@ -10,12 +10,12 @@ const chalk_1 = __importDefault(require("chalk"));
 const template_helper_1 = require("./template-helper");
 const inquirer_1 = __importDefault(require("inquirer"));
 const CURR_DIR = process.cwd();
-const CHOICES = fs_1.default.readdirSync(path_1.default.join(__dirname, "..", "templates"));
+const CHOICES = fs_1.default.readdirSync(path_1.default.join(__dirname, '..', 'templates'));
 const QUESTIONS = [
     {
-        name: "template-choice",
-        type: "list",
-        message: "What project template would you like to generate?",
+        name: 'template-choice',
+        type: 'list',
+        message: 'What project template would you like to generate?',
         choices: CHOICES,
         // when: () => {
         //   if (CHOICES.length === 1) return false;
@@ -23,29 +23,29 @@ const QUESTIONS = [
         // },
     },
     {
-        name: "project-name",
-        type: "input",
-        message: "Project name:",
+        name: 'project-name',
+        type: 'input',
+        message: 'Project name:',
         validate: function (input) {
             if (/^([A-Za-z\-\_\d])+$/.test(input))
                 return true;
             else
-                return "Project name may only include letters, numbers, underscores and dashes.";
+                return 'Project name may only include letters, numbers, underscores and dashes.';
         },
     },
 ];
 function promptForNewProject() {
     inquirer_1.default.prompt(QUESTIONS).then((answers) => {
         //console.log(answers);
-        const templateChoice = answers["template-choice"] ?? CHOICES[0];
-        const projectName = answers["project-name"];
-        const templatePath = path_1.default.join(__dirname, "..", "templates", templateChoice);
+        const templateChoice = answers['template-choice'] ?? CHOICES[0];
+        const projectName = answers['project-name'];
+        const templatePath = path_1.default.join(__dirname, '..', 'templates', templateChoice);
         const templateData = {
             projectName: projectName,
             selectedTemplate: templateChoice,
         };
         createNewProject(projectName, templatePath, templateData);
-        console.log(chalk_1.default.green("New project created."));
+        console.log(chalk_1.default.green('New project created.'));
     });
 }
 exports.promptForNewProject = promptForNewProject;
@@ -57,7 +57,8 @@ function createNewProject(newProjectName, templatePath, templateData) {
     }
     fs_1.default.mkdirSync(newProjectPath);
     createDirectoryContents(templatePath, newProjectName, templateData);
-    createPinkyringFile(newProjectPath, templateData);
+    //createPinkyringFile(newProjectPath, templateData);
+    copyPinkyringFile(templatePath, newProjectPath);
 }
 function createDirectoryContents(templatePath, newProjectPath, templateData) {
     const filesToCreate = fs_1.default.readdirSync(templatePath);
@@ -65,15 +66,15 @@ function createDirectoryContents(templatePath, newProjectPath, templateData) {
         const origFilePath = path_1.default.join(templatePath, file);
         const fileStats = fs_1.default.statSync(origFilePath);
         if (fileStats.isFile()) {
-            let fileContents = fs_1.default.readFileSync(origFilePath, "utf8");
+            let fileContents = fs_1.default.readFileSync(origFilePath, 'utf8');
             fileContents = (0, template_helper_1.render)(fileContents, templateData);
             const writePath = path_1.default.join(CURR_DIR, newProjectPath, file);
-            fs_1.default.writeFileSync(writePath, fileContents, "utf8");
+            fs_1.default.writeFileSync(writePath, fileContents, 'utf8');
         }
         else if (fileStats.isDirectory()) {
-            // don't copy the .pinkyring folder
+            // don't copy the .pinkyring-template folder
             // otherwise, copy the folder and all its contents
-            if (file !== ".pinkyring") {
+            if (file !== '.pinkyring-template') {
                 fs_1.default.mkdirSync(path_1.default.join(CURR_DIR, newProjectPath, file));
                 // recursively make new contents
                 createDirectoryContents(path_1.default.join(templatePath, file), path_1.default.join(newProjectPath, file), templateData);
@@ -82,6 +83,12 @@ function createDirectoryContents(templatePath, newProjectPath, templateData) {
     });
 }
 function createPinkyringFile(newProjectPath, templateData) {
-    const filePath = path_1.default.join(newProjectPath, ".pinkyring");
+    const filePath = path_1.default.join(newProjectPath, '.pinkyring');
     fs_1.default.writeFileSync(filePath, `TEMPLATE='${templateData.selectedTemplate}'`);
+}
+function copyPinkyringFile(templatePath, newProjectPath) {
+    const filePath = path_1.default.join(templatePath, '.pinkyring-template', '.pinkyring');
+    const fileContents = fs_1.default.readFileSync(filePath, 'utf8');
+    const newFilePath = path_1.default.join(newProjectPath, '.pinkyring');
+    fs_1.default.writeFileSync(newFilePath, fileContents, 'utf8');
 }
