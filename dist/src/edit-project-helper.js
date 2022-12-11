@@ -7,8 +7,6 @@ exports.findTemplateAndRunEdit = void 0;
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
 const chalk_1 = __importDefault(require("chalk"));
-//import {editTemplatePrompt} from './template-options/pinkyring-server-template/edit-template';
-//import {editTemplatePrompt} from '@server-template/edit-template';
 const edit_template_1 = require("../templates/pinkyring-server-template/.pinkyring/edit-template");
 // find the .pinkyring file
 // read the template name
@@ -72,5 +70,5 @@ function runTemplateEditFile(templateName) {
     // if (fs.existsSync(editFile)) {
     //   shell.exec(`npx ts-node ${editFile}`);
     // }
-    (0, edit_template_1.editTemplatePrompt)();
+    (0, edit_template_1.editTemplate)();
 }
