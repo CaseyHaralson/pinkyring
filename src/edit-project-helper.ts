@@ -53,7 +53,7 @@ export function editProject() {
 }
 
 function readPinkyringFile() {
-  const pinkyringFilePath = path.join(CURR_DIR, '.pinkyring');
+  const pinkyringFilePath = path.join(CURR_DIR, '.pinkyring.json');
   if (!fs.existsSync(pinkyringFilePath)) {
     console.log(
       chalk.red(

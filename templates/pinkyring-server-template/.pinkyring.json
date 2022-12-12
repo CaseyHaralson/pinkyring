@@ -1,0 +1,14 @@
+{
+  "templateName": "pinkyring-server-template",
+  "pinkyringVersion": "0.1.0",
+  "removableOptions": [
+    {
+      "label": "SERVERLESS",
+      "globPatterns": [
+        ".github/workflows/serverless.*",
+        "serverless",
+        "serverless.yml"
+      ]
+    }
+  ]
+}
