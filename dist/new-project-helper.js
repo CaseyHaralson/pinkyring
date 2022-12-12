@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.promptForNewProject = void 0;
+exports.newProject = void 0;
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
 const chalk_1 = __importDefault(require("chalk"));
@@ -15,7 +15,7 @@ const QUESTIONS = [
     {
         name: 'template-choice',
         type: 'list',
-        message: 'What project template would you like to generate?',
+        message: 'What project template would you like to use?',
         choices: CHOICES,
         // when: () => {
         //   if (CHOICES.length === 1) return false;
@@ -34,7 +34,7 @@ const QUESTIONS = [
         },
     },
 ];
-function promptForNewProject() {
+function newProject() {
     inquirer_1.default.prompt(QUESTIONS).then((answers) => {
         //console.log(answers);
         const templateChoice = answers['template-choice'] ?? CHOICES[0];
@@ -49,7 +49,7 @@ function promptForNewProject() {
             console.log(chalk_1.default.green('New project created.'));
     });
 }
-exports.promptForNewProject = promptForNewProject;
+exports.newProject = newProject;
 function createNewProject(newProjectName, templatePath, templateData) {
     const newProjectPath = path_1.default.join(CURR_DIR, newProjectName);
     if (fs_1.default.existsSync(newProjectPath)) {
@@ -59,7 +59,7 @@ function createNewProject(newProjectName, templatePath, templateData) {
     fs_1.default.mkdirSync(newProjectPath);
     createDirectoryContents(templatePath, newProjectName, templateData);
     //createPinkyringFile(newProjectPath, templateData);
-    copyPinkyringFile(templatePath, newProjectPath);
+    //copyPinkyringFile(templatePath, newProjectPath);
     return true;
 }
 function createDirectoryContents(templatePath, newProjectPath, templateData) {
@@ -76,21 +76,24 @@ function createDirectoryContents(templatePath, newProjectPath, templateData) {
         else if (fileStats.isDirectory()) {
             // don't copy the .pinkyring-template folder
             // otherwise, copy the folder and all its contents
-            if (file !== '.pinkyring-template') {
-                fs_1.default.mkdirSync(path_1.default.join(CURR_DIR, newProjectPath, file));
-                // recursively make new contents
-                createDirectoryContents(path_1.default.join(templatePath, file), path_1.default.join(newProjectPath, file), templateData);
-            }
+            //if (file !== '.pinkyring-template') {
+            fs_1.default.mkdirSync(path_1.default.join(CURR_DIR, newProjectPath, file));
+            // recursively make new contents
+            createDirectoryContents(path_1.default.join(templatePath, file), path_1.default.join(newProjectPath, file), templateData);
+            //}
         }
     });
 }
-function createPinkyringFile(newProjectPath, templateData) {
-    const filePath = path_1.default.join(newProjectPath, '.pinkyring');
-    fs_1.default.writeFileSync(filePath, `TEMPLATE='${templateData.selectedTemplate}'`);
-}
-function copyPinkyringFile(templatePath, newProjectPath) {
-    const filePath = path_1.default.join(templatePath, '.pinkyring-template', '.pinkyring');
-    const fileContents = fs_1.default.readFileSync(filePath, 'utf8');
-    const newFilePath = path_1.default.join(newProjectPath, '.pinkyring');
-    fs_1.default.writeFileSync(newFilePath, fileContents, 'utf8');
-}
+// function createPinkyringFile(
+//   newProjectPath: string,
+//   templateData: TemplateData
+// ) {
+//   const filePath = path.join(newProjectPath, '.pinkyring');
+//   fs.writeFileSync(filePath, `TEMPLATE='${templateData.selectedTemplate}'`);
+// }
+// function copyPinkyringFile(templatePath: string, newProjectPath: string) {
+//   const filePath = path.join(templatePath, '.pinkyring-template', '.pinkyring');
+//   const fileContents = fs.readFileSync(filePath, 'utf8');
+//   const newFilePath = path.join(newProjectPath, '.pinkyring');
+//   fs.writeFileSync(newFilePath, fileContents, 'utf8');
+// }
