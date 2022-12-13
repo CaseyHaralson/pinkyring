@@ -38,7 +38,6 @@ export function newProject() {
     const templatePath = path.join(
       __dirname,
       '..',
-      //'..',
       'templates',
       templateChoice
     );
@@ -75,9 +74,6 @@ function createNewProject(
 
   fs.mkdirSync(newProjectPath);
   createDirectoryContents(templatePath, newProjectName, templateData);
-  //createPinkyringFile(newProjectPath, templateData);
-  //copyPinkyringFile(templatePath, newProjectPath);
-
   return true;
 }
 
@@ -98,9 +94,6 @@ function createDirectoryContents(
       const writePath = path.join(CURR_DIR, newProjectPath, file);
       fs.writeFileSync(writePath, fileContents, 'utf8');
     } else if (fileStats.isDirectory()) {
-      // don't copy the .pinkyring-template folder
-      // otherwise, copy the folder and all its contents
-      //if (file !== '.pinkyring-template') {
       fs.mkdirSync(path.join(CURR_DIR, newProjectPath, file));
 
       // recursively make new contents
@@ -109,23 +102,6 @@ function createDirectoryContents(
         path.join(newProjectPath, file),
         templateData
       );
-      //}
     }
   });
 }
-
-// function createPinkyringFile(
-//   newProjectPath: string,
-//   templateData: TemplateData
-// ) {
-//   const filePath = path.join(newProjectPath, '.pinkyring');
-//   fs.writeFileSync(filePath, `TEMPLATE='${templateData.selectedTemplate}'`);
-// }
-
-// function copyPinkyringFile(templatePath: string, newProjectPath: string) {
-//   const filePath = path.join(templatePath, '.pinkyring-template', '.pinkyring');
-//   const fileContents = fs.readFileSync(filePath, 'utf8');
-
-//   const newFilePath = path.join(newProjectPath, '.pinkyring');
-//   fs.writeFileSync(newFilePath, fileContents, 'utf8');
-// }

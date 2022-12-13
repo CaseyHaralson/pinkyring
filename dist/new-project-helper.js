@@ -39,9 +39,7 @@ function newProject() {
         //console.log(answers);
         const templateChoice = answers['template-choice'] ?? CHOICES[0];
         const projectName = answers['project-name'];
-        const templatePath = path_1.default.join(__dirname, '..', 
-        //'..',
-        'templates', templateChoice);
+        const templatePath = path_1.default.join(__dirname, '..', 'templates', templateChoice);
         const templateData = {
             projectName: projectName,
             selectedTemplate: templateChoice,
@@ -60,8 +58,6 @@ function createNewProject(newProjectName, templatePath, templateData) {
     }
     fs_1.default.mkdirSync(newProjectPath);
     createDirectoryContents(templatePath, newProjectName, templateData);
-    //createPinkyringFile(newProjectPath, templateData);
-    //copyPinkyringFile(templatePath, newProjectPath);
     return true;
 }
 function createDirectoryContents(templatePath, newProjectPath, templateData) {
@@ -76,26 +72,9 @@ function createDirectoryContents(templatePath, newProjectPath, templateData) {
             fs_1.default.writeFileSync(writePath, fileContents, 'utf8');
         }
         else if (fileStats.isDirectory()) {
-            // don't copy the .pinkyring-template folder
-            // otherwise, copy the folder and all its contents
-            //if (file !== '.pinkyring-template') {
             fs_1.default.mkdirSync(path_1.default.join(CURR_DIR, newProjectPath, file));
             // recursively make new contents
             createDirectoryContents(path_1.default.join(templatePath, file), path_1.default.join(newProjectPath, file), templateData);
-            //}
         }
     });
 }
-// function createPinkyringFile(
-//   newProjectPath: string,
-//   templateData: TemplateData
-// ) {
-//   const filePath = path.join(newProjectPath, '.pinkyring');
-//   fs.writeFileSync(filePath, `TEMPLATE='${templateData.selectedTemplate}'`);
-// }
-// function copyPinkyringFile(templatePath: string, newProjectPath: string) {
-//   const filePath = path.join(templatePath, '.pinkyring-template', '.pinkyring');
-//   const fileContents = fs.readFileSync(filePath, 'utf8');
-//   const newFilePath = path.join(newProjectPath, '.pinkyring');
-//   fs.writeFileSync(newFilePath, fileContents, 'utf8');
-// }
