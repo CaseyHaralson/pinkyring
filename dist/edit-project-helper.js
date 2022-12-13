@@ -8,6 +8,7 @@ const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
 const chalk_1 = __importDefault(require("chalk"));
 const rimraf_1 = __importDefault(require("rimraf"));
+const os_1 = __importDefault(require("os"));
 const inquirer_1 = __importDefault(require("inquirer"));
 // find the .pinkyring file
 // read the template name
@@ -34,6 +35,14 @@ files:
 
 */
 const CURR_DIR = process.cwd();
+const CONTENT_TO_SKIP_LINE_EDITS = [
+    'node_modules',
+    'build',
+    'package.lock.json',
+    'package.json',
+    'tsconfig.json',
+    'tsconfig.tsbuildinfo',
+];
 function editProject() {
     const templateConfig = readPinkyringFile();
     if (templateConfig) {
@@ -45,6 +54,7 @@ function editProject() {
                 return;
             const removableOption = getRemovableOption(templateConfig, remove);
             removeGlobs(removableOption);
+            removeContent(removableOption);
         });
     }
 }
@@ -97,6 +107,51 @@ function removeGlobs(removableOption) {
             rimraf_1.default.sync(pattern);
         });
     }
+}
+function removeContent(removableOption) {
+    // for each file in folder and subfolder
+    // read content and look for pattern
+    // when find start, stop writing content
+    // then when find end, start writing content again
+    if (removableOption.contentPattern &&
+        removableOption.contentPattern.length > 0) {
+        editEachFile(CURR_DIR, removableOption.contentPattern);
+    }
+}
+function editEachFile(folderPath, contentPattern) {
+    const files = fs_1.default.readdirSync(folderPath);
+    files.forEach((file) => {
+        if (!CONTENT_TO_SKIP_LINE_EDITS.includes(file)) {
+            const filePath = path_1.default.join(folderPath, file);
+            const fileStats = fs_1.default.statSync(filePath);
+            if (fileStats.isFile()) {
+                // read and edit file if necessary
+                const fileContents = fs_1.default.readFileSync(filePath, 'utf8');
+                if (fileContents.indexOf(contentPattern) !== -1) {
+                    const fileLines = fileContents.split(/\r?\n/);
+                    // recreate the file
+                    fs_1.default.writeFileSync(filePath, '', 'utf8');
+                    // read each line and remove sections of the content pattern
+                    let write = true;
+                    fileLines.forEach((line) => {
+                        if (write && line.indexOf(contentPattern) > -1) {
+                            write = false;
+                        }
+                        else if (write) {
+                            fs_1.default.appendFileSync(filePath, line + os_1.default.EOL, 'utf8');
+                        }
+                        else if (line.indexOf(contentPattern + '.end') > -1) {
+                            write = true;
+                        }
+                    });
+                }
+            }
+            else if (fileStats.isDirectory()) {
+                // recursively go through each directory
+                editEachFile(filePath, contentPattern);
+            }
+        }
+    });
 }
 // export function findTemplateAndRunEdit() {
 //   const templateName = findTemplateName();
