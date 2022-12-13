@@ -1,4 +1,4 @@
-export interface TemplateConfigInterface {
+export interface IPinkyringConfig {
   templateName: string;
   pinkyringVersion: string;
   removableOptions: TemplateRemovableOption[];

@@ -34,6 +34,7 @@ function editProject() {
             removeContent(removableOption);
             removeTypescriptReferences(removableOption);
             removePackageReferences(removableOption);
+            saveOptionAsRemoved(templateConfig, removableOption);
         });
     }
 }
@@ -178,7 +179,7 @@ function editEachTsConfig(folderPath, patterns) {
                     fs_1.default.writeFileSync(filePath, '', 'utf8');
                     const newFileContents = JSON.stringify(json, null, 2);
                     const newFileLines = newFileContents.split(/\r?\n/);
-                    newFileLines.forEach((line, index) => {
+                    newFileLines.forEach((line) => {
                         fs_1.default.appendFileSync(filePath, line + os_1.default.EOL, 'utf8');
                     });
                 }
@@ -228,7 +229,7 @@ function editEachPackageConfig(folderPath, names) {
                     fs_1.default.writeFileSync(filePath, '', 'utf8');
                     const newFileContents = JSON.stringify(json, null, 2);
                     const newFileLines = newFileContents.split(/\r?\n/);
-                    newFileLines.forEach((line, index) => {
+                    newFileLines.forEach((line) => {
                         fs_1.default.appendFileSync(filePath, line + os_1.default.EOL, 'utf8');
                     });
                 }
@@ -238,5 +239,16 @@ function editEachPackageConfig(folderPath, names) {
             // recursively go through each directory
             editEachTsConfig(filePath, names);
         }
+    });
+}
+function saveOptionAsRemoved(templateConfig, removableOption) {
+    removableOption.removed = true;
+    // recreate the file
+    const pinkyringFilePath = path_1.default.join(CURR_DIR, '.pinkyring.json');
+    fs_1.default.writeFileSync(pinkyringFilePath, '', 'utf8');
+    const newFileContents = JSON.stringify(templateConfig, null, 2);
+    const newFileLines = newFileContents.split(/\r?\n/);
+    newFileLines.forEach((line) => {
+        fs_1.default.appendFileSync(pinkyringFilePath, line + os_1.default.EOL, 'utf8');
     });
 }

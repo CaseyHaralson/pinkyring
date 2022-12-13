@@ -3,10 +3,7 @@ import path from 'path';
 import chalk from 'chalk';
 import rimraf from 'rimraf';
 import os from 'os';
-import {
-  TemplateConfigInterface,
-  TemplateRemovableOption,
-} from './pinkyring-config-interface';
+import {IPinkyringConfig, TemplateRemovableOption} from './IPinkyringConfig';
 import inquirer, {Answers} from 'inquirer';
 
 const CURR_DIR = process.cwd();
@@ -35,6 +32,7 @@ export function editProject() {
       removeContent(removableOption);
       removeTypescriptReferences(removableOption);
       removePackageReferences(removableOption);
+      saveOptionAsRemoved(templateConfig, removableOption);
     });
   }
 }
@@ -50,13 +48,13 @@ function readPinkyringFile() {
     return null;
   }
 
-  const templateConfig: TemplateConfigInterface = JSON.parse(
+  const templateConfig: IPinkyringConfig = JSON.parse(
     fs.readFileSync(pinkyringFilePath, 'utf8')
   );
   return templateConfig;
 }
 
-function buildRemovalChoices(templateConfig: TemplateConfigInterface) {
+function buildRemovalChoices(templateConfig: IPinkyringConfig) {
   //console.log(`Template config: ${JSON.stringify(templateConfig)}`);
   let choices: string[] = [];
   templateConfig.removableOptions.forEach((option) => {
@@ -83,10 +81,7 @@ function buildRemovalQuestion(removalChoices: string[]) {
   return questions;
 }
 
-function getRemovableOption(
-  templateConfig: TemplateConfigInterface,
-  remove: string
-) {
+function getRemovableOption(templateConfig: IPinkyringConfig, remove: string) {
   let removableOption: TemplateRemovableOption = null;
   templateConfig.removableOptions.forEach((option) => {
     if (option.label === remove) {
@@ -204,7 +199,7 @@ function editEachTsConfig(folderPath: string, patterns: string[]) {
 
           const newFileContents = JSON.stringify(json, null, 2);
           const newFileLines = newFileContents.split(/\r?\n/);
-          newFileLines.forEach((line, index) => {
+          newFileLines.forEach((line) => {
             fs.appendFileSync(filePath, line + os.EOL, 'utf8');
           });
         }
@@ -258,7 +253,7 @@ function editEachPackageConfig(folderPath: string, names: string[]) {
 
           const newFileContents = JSON.stringify(json, null, 2);
           const newFileLines = newFileContents.split(/\r?\n/);
-          newFileLines.forEach((line, index) => {
+          newFileLines.forEach((line) => {
             fs.appendFileSync(filePath, line + os.EOL, 'utf8');
           });
         }
@@ -267,5 +262,22 @@ function editEachPackageConfig(folderPath: string, names: string[]) {
       // recursively go through each directory
       editEachTsConfig(filePath, names);
     }
+  });
+}
+
+function saveOptionAsRemoved(
+  templateConfig: IPinkyringConfig,
+  removableOption: TemplateRemovableOption
+) {
+  removableOption.removed = true;
+
+  // recreate the file
+  const pinkyringFilePath = path.join(CURR_DIR, '.pinkyring.json');
+  fs.writeFileSync(pinkyringFilePath, '', 'utf8');
+
+  const newFileContents = JSON.stringify(templateConfig, null, 2);
+  const newFileLines = newFileContents.split(/\r?\n/);
+  newFileLines.forEach((line) => {
+    fs.appendFileSync(pinkyringFilePath, line + os.EOL, 'utf8');
   });
 }
