@@ -25,7 +25,10 @@ export function editProject() {
     const question = buildRemovalQuestion(removalChoices);
     inquirer.prompt(question).then((answers: Answers) => {
       const remove = answers['remove'];
-      if (remove === 'Cancel') return;
+      if (remove === 'Cancel') {
+        sayGoodbye();
+        return;
+      }
 
       const removableOption = getRemovableOption(templateConfig, remove);
       removeGlobs(removableOption);
@@ -33,6 +36,8 @@ export function editProject() {
       removeTypescriptReferences(removableOption);
       removePackageReferences(removableOption);
       saveOptionAsRemoved(templateConfig, removableOption);
+
+      wrapUp(removableOption);
     });
   }
 }
@@ -90,6 +95,31 @@ function getRemovableOption(templateConfig: IPinkyringConfig, remove: string) {
     }
   });
   return removableOption;
+}
+
+function wrapUp(removableOption: TemplateRemovableOption) {
+  console.log(chalk.green(`${removableOption.label} was removed.`));
+
+  const question = [
+    {
+      name: 'remove',
+      type: 'list',
+      message: 'Would you like to remove anything else?',
+      choices: ['YES', 'NO'],
+    },
+  ];
+
+  inquirer.prompt(question).then((answers: Answers) => {
+    const remove = answers['remove'];
+    if (remove === 'NO') {
+      sayGoodbye();
+      return;
+    } else editProject();
+  });
+}
+
+function sayGoodbye() {
+  console.log(`Goodbye!`);
 }
 
 function removeGlobs(removableOption: TemplateRemovableOption) {

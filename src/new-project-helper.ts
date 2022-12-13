@@ -52,7 +52,7 @@ export function newProject() {
       templatePath,
       templateData
     );
-    if (newProjectCreated) console.log(chalk.green('New project created.'));
+    if (newProjectCreated) console.log(chalk.green('New project created!'));
   });
 }
 

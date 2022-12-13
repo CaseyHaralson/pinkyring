@@ -46,7 +46,7 @@ function newProject() {
         };
         const newProjectCreated = createNewProject(projectName, templatePath, templateData);
         if (newProjectCreated)
-            console.log(chalk_1.default.green('New project created.'));
+            console.log(chalk_1.default.green('New project created!'));
     });
 }
 exports.newProject = newProject;
