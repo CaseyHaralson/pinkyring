@@ -23,6 +23,12 @@
       "globPatterns": ["packages/apps/api-rest"],
       "typescriptReferences": ["apps/api-rest"],
       "packageNames": ["@test/apps_api-rest"]
+    },
+    {
+      "label": "CHRON JOBS",
+      "globPatterns": ["packages/apps/cron-jobs"],
+      "typescriptReferences": ["apps/cron-jobs"],
+      "packageNames": ["@test/apps_cron-jobs"]
     }
   ]
 }
