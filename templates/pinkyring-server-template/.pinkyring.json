@@ -6,6 +6,10 @@
       "label": "SERVERLESS",
       "globPatterns": [
         ".github/workflows/serverless.*",
+        "packages/infrastructure/aws/lambdas/src",
+        "packages/infrastructure/aws/lambdas/package.json",
+        "packages/infrastructure/aws/snqs/src",
+        "packages/infrastructure/aws/snqs/package.json",
         "serverless",
         "serverless.yml"
       ]
