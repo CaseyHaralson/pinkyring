@@ -12,7 +12,8 @@
         "packages/infrastructure/aws/snqs/package.json",
         "serverless",
         "serverless.yml"
-      ]
+      ],
+      "contentPattern": ".pinkyring=SERVERLESS"
     }
   ]
 }

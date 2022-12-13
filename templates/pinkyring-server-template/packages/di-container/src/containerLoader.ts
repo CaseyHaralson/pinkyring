@@ -4,7 +4,9 @@ import ConfigHelper, {
 } from '@<%= projectName %>/core/util/configHelper';
 import ConfigFileReader from '@<%= projectName %>/infrastructure_util/configFileReader';
 import LocalEventRepository from '@<%= projectName %>/infrastructure_queue/eventRepository';
+// .pinkyring=SERVERLESS
 import ServerEventRepository from '@<%= projectName %>/infrastructure_aws_snqs/eventRepository';
+// .pinkyring=SERVERLESS.end
 import Logger from '@<%= projectName %>/core/util/logger';
 import LogHandler from '@<%= projectName %>/infrastructure_util/logHandler';
 import {IBaseParams} from '@<%= projectName %>/core/util/baseClass';
@@ -84,7 +86,9 @@ const loadTestItems = function (container: AwilixContainer) {
 
 const loadServerItems = function (container: AwilixContainer) {
   container.register({
+    // .pinkyring=SERVERLESS
     eventRepository: asClass(ServerEventRepository),
+    // .pinkyring=SERVERLESS.end
   });
 };
 

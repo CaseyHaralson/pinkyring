@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import chalk from 'chalk';
 import rimraf from 'rimraf';
+import os from 'os';
 // import {editTemplate} from '../templates/pinkyring-server-template/.pinkyring-template/src/edit-template';
 import {
   TemplateConfigInterface,
@@ -37,6 +38,15 @@ files:
 
 const CURR_DIR = process.cwd();
 
+const CONTENT_TO_SKIP_LINE_EDITS = [
+  'node_modules',
+  'build',
+  'package.lock.json',
+  'package.json',
+  'tsconfig.json',
+  'tsconfig.tsbuildinfo',
+];
+
 export function editProject() {
   const templateConfig = readPinkyringFile();
   if (templateConfig) {
@@ -48,6 +58,7 @@ export function editProject() {
 
       const removableOption = getRemovableOption(templateConfig, remove);
       removeGlobs(removableOption);
+      removeContent(removableOption);
     });
   }
 }
@@ -116,6 +127,54 @@ function removeGlobs(removableOption: TemplateRemovableOption) {
       rimraf.sync(pattern);
     });
   }
+}
+
+function removeContent(removableOption: TemplateRemovableOption) {
+  // for each file in folder and subfolder
+  // read content and look for pattern
+  // when find start, stop writing content
+  // then when find end, start writing content again
+  if (
+    removableOption.contentPattern &&
+    removableOption.contentPattern.length > 0
+  ) {
+    editEachFile(CURR_DIR, removableOption.contentPattern);
+  }
+}
+
+function editEachFile(folderPath: string, contentPattern: string) {
+  const files = fs.readdirSync(folderPath);
+  files.forEach((file) => {
+    if (!CONTENT_TO_SKIP_LINE_EDITS.includes(file)) {
+      const filePath = path.join(folderPath, file);
+      const fileStats = fs.statSync(filePath);
+      if (fileStats.isFile()) {
+        // read and edit file if necessary
+        const fileContents = fs.readFileSync(filePath, 'utf8');
+        if (fileContents.indexOf(contentPattern) !== -1) {
+          const fileLines = fileContents.split(/\r?\n/);
+
+          // recreate the file
+          fs.writeFileSync(filePath, '', 'utf8');
+
+          // read each line and remove sections of the content pattern
+          let write = true;
+          fileLines.forEach((line) => {
+            if (write && line.indexOf(contentPattern) > -1) {
+              write = false;
+            } else if (write) {
+              fs.appendFileSync(filePath, line + os.EOL, 'utf8');
+            } else if (line.indexOf(contentPattern + '.end') > -1) {
+              write = true;
+            }
+          });
+        }
+      } else if (fileStats.isDirectory()) {
+        // recursively go through each directory
+        editEachFile(filePath, contentPattern);
+      }
+    }
+  });
 }
 
 // export function findTemplateAndRunEdit() {
