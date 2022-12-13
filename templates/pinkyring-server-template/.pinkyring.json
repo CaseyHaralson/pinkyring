@@ -20,7 +20,9 @@
     },
     {
       "label": "REST ENDPOINTS",
-      "globPatterns": ["packages/apps/api-rest"]
+      "globPatterns": ["packages/apps/api-rest"],
+      "typescriptReferences": ["apps/api-rest"],
+      "packageNames": ["@test/apps_api-rest"]
     }
   ]
 }
