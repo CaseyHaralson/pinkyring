@@ -33,6 +33,7 @@ function editProject() {
             removeGlobs(removableOption);
             removeContent(removableOption);
             removeTypescriptReferences(removableOption);
+            removePackageReferences(removableOption);
         });
     }
 }
@@ -177,7 +178,6 @@ function editEachTsConfig(folderPath, patterns) {
                     fs_1.default.writeFileSync(filePath, '', 'utf8');
                     const newFileContents = JSON.stringify(json, null, 2);
                     const newFileLines = newFileContents.split(/\r?\n/);
-                    const lastLineIndex = newFileLines.length - 1;
                     newFileLines.forEach((line, index) => {
                         fs_1.default.appendFileSync(filePath, line + os_1.default.EOL, 'utf8');
                     });
@@ -187,6 +187,56 @@ function editEachTsConfig(folderPath, patterns) {
         else if (fileStats.isDirectory()) {
             // recursively go through each directory
             editEachTsConfig(filePath, patterns);
+        }
+    });
+}
+function removePackageReferences(removableOption) {
+    if (removableOption.packageNames && removableOption.packageNames.length > 0) {
+        editEachPackageConfig(CURR_DIR, removableOption.packageNames);
+    }
+}
+function editEachPackageConfig(folderPath, names) {
+    const files = fs_1.default.readdirSync(folderPath);
+    files.forEach((file) => {
+        if (file === 'node_modules')
+            return;
+        const filePath = path_1.default.join(folderPath, file);
+        const fileStats = fs_1.default.statSync(filePath);
+        if (fileStats.isFile()) {
+            if (file === 'package.json') {
+                const fileContents = fs_1.default.readFileSync(filePath, 'utf8');
+                const json = JSON.parse(fileContents);
+                let editedTheFile = false;
+                if (json.dependencies) {
+                    names.forEach((name) => {
+                        if (json.dependencies.hasOwnProperty(name)) {
+                            delete json.dependencies[name];
+                            editedTheFile = true;
+                        }
+                    });
+                }
+                if (json.devDependencies) {
+                    names.forEach((name) => {
+                        if (json.devDependencies.hasOwnProperty(name)) {
+                            delete json.devDependencies[name];
+                            editedTheFile = true;
+                        }
+                    });
+                }
+                if (editedTheFile) {
+                    // recreate the file
+                    fs_1.default.writeFileSync(filePath, '', 'utf8');
+                    const newFileContents = JSON.stringify(json, null, 2);
+                    const newFileLines = newFileContents.split(/\r?\n/);
+                    newFileLines.forEach((line, index) => {
+                        fs_1.default.appendFileSync(filePath, line + os_1.default.EOL, 'utf8');
+                    });
+                }
+            }
+        }
+        else if (fileStats.isDirectory()) {
+            // recursively go through each directory
+            editEachTsConfig(filePath, names);
         }
     });
 }

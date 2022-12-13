@@ -34,6 +34,7 @@ export function editProject() {
       removeGlobs(removableOption);
       removeContent(removableOption);
       removeTypescriptReferences(removableOption);
+      removePackageReferences(removableOption);
     });
   }
 }
@@ -211,6 +212,60 @@ function editEachTsConfig(folderPath: string, patterns: string[]) {
     } else if (fileStats.isDirectory()) {
       // recursively go through each directory
       editEachTsConfig(filePath, patterns);
+    }
+  });
+}
+
+function removePackageReferences(removableOption: TemplateRemovableOption) {
+  if (removableOption.packageNames && removableOption.packageNames.length > 0) {
+    editEachPackageConfig(CURR_DIR, removableOption.packageNames);
+  }
+}
+
+function editEachPackageConfig(folderPath: string, names: string[]) {
+  const files = fs.readdirSync(folderPath);
+  files.forEach((file) => {
+    if (file === 'node_modules') return;
+
+    const filePath = path.join(folderPath, file);
+    const fileStats = fs.statSync(filePath);
+    if (fileStats.isFile()) {
+      if (file === 'package.json') {
+        const fileContents = fs.readFileSync(filePath, 'utf8');
+        const json = JSON.parse(fileContents);
+
+        let editedTheFile = false;
+        if (json.dependencies) {
+          names.forEach((name) => {
+            if (json.dependencies.hasOwnProperty(name)) {
+              delete json.dependencies[name];
+              editedTheFile = true;
+            }
+          });
+        }
+        if (json.devDependencies) {
+          names.forEach((name) => {
+            if (json.devDependencies.hasOwnProperty(name)) {
+              delete json.devDependencies[name];
+              editedTheFile = true;
+            }
+          });
+        }
+
+        if (editedTheFile) {
+          // recreate the file
+          fs.writeFileSync(filePath, '', 'utf8');
+
+          const newFileContents = JSON.stringify(json, null, 2);
+          const newFileLines = newFileContents.split(/\r?\n/);
+          newFileLines.forEach((line, index) => {
+            fs.appendFileSync(filePath, line + os.EOL, 'utf8');
+          });
+        }
+      }
+    } else if (fileStats.isDirectory()) {
+      // recursively go through each directory
+      editEachTsConfig(filePath, names);
     }
   });
 }

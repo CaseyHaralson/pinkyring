@@ -11,7 +11,7 @@
         "serverless.yml"
       ],
       "contentPattern": ".pinkyring=SERVERLESS",
-      "typescriptReferences": ["infrastructure/aws/snqs"],
+      "typescriptReferences": ["infrastructure/aws/lambdas", "infrastructure/aws/snqs"],
       "packageNames": ["@test/infrastructure_aws_lambdas", "@test/infrastructure_aws_snqs"]
     },
     {
