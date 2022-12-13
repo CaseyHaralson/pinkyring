@@ -3,9 +3,8 @@
     "module": "CommonJS",
     "target": "ESNext",
     "esModuleInterop": true,
-    //"rootDir": "./src",
+    "rootDir": "./src",
     "outDir": "./dist"
   },
-  //"exclude": ["templates"],
-  "include": ["src", "templates/**/.pinkyring-template"]
+  "exclude": ["templates"]
 }

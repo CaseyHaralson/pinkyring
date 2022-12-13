@@ -10,7 +10,7 @@ const chalk_1 = __importDefault(require("chalk"));
 const template_helper_1 = require("./template-helper");
 const inquirer_1 = __importDefault(require("inquirer"));
 const CURR_DIR = process.cwd();
-const CHOICES = fs_1.default.readdirSync(path_1.default.join(__dirname, '..', '..', 'templates'));
+const CHOICES = fs_1.default.readdirSync(path_1.default.join(__dirname, '..', 'templates'));
 const QUESTIONS = [
     {
         name: 'template-choice',
@@ -39,7 +39,9 @@ function newProject() {
         //console.log(answers);
         const templateChoice = answers['template-choice'] ?? CHOICES[0];
         const projectName = answers['project-name'];
-        const templatePath = path_1.default.join(__dirname, '..', '..', 'templates', templateChoice);
+        const templatePath = path_1.default.join(__dirname, '..', 
+        //'..',
+        'templates', templateChoice);
         const templateData = {
             projectName: projectName,
             selectedTemplate: templateChoice,

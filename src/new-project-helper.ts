@@ -5,7 +5,7 @@ import {render, TemplateData} from './template-helper';
 import inquirer, {Answers} from 'inquirer';
 
 const CURR_DIR = process.cwd();
-const CHOICES = fs.readdirSync(path.join(__dirname, '..', '..', 'templates'));
+const CHOICES = fs.readdirSync(path.join(__dirname, '..', 'templates'));
 const QUESTIONS = [
   {
     name: 'template-choice',
@@ -38,7 +38,7 @@ export function newProject() {
     const templatePath = path.join(
       __dirname,
       '..',
-      '..',
+      //'..',
       'templates',
       templateChoice
     );

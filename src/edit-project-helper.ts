@@ -70,9 +70,14 @@ function readPinkyringFile() {
 }
 
 function buildRemovalChoices(templateConfig: TemplateConfigInterface) {
+  //console.log(`Template config: ${JSON.stringify(templateConfig)}`);
   let choices: string[] = [];
   templateConfig.removableOptions.forEach((option) => {
-    if (option.removed === null || option.removed === false) {
+    if (
+      option.removed === null ||
+      option.removed === undefined ||
+      option.removed === false
+    ) {
       choices.push(option.label);
     }
   });

@@ -50,7 +50,7 @@ function editProject() {
 }
 exports.editProject = editProject;
 function readPinkyringFile() {
-    const pinkyringFilePath = path_1.default.join(CURR_DIR, '.pinkyring');
+    const pinkyringFilePath = path_1.default.join(CURR_DIR, '.pinkyring.json');
     if (!fs_1.default.existsSync(pinkyringFilePath)) {
         console.log(chalk_1.default.red(`The .pinkyring file couldn't be found. This command needs to be run from inside a project that was created with pinkyring.`));
         return null;
@@ -59,9 +59,12 @@ function readPinkyringFile() {
     return templateConfig;
 }
 function buildRemovalChoices(templateConfig) {
+    //console.log(`Template config: ${JSON.stringify(templateConfig)}`);
     let choices = [];
     templateConfig.removableOptions.forEach((option) => {
-        if (option.removed === null || option.removed === false) {
+        if (option.removed === null ||
+            option.removed === undefined ||
+            option.removed === false) {
             choices.push(option.label);
         }
     });
