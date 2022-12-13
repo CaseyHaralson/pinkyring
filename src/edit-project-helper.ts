@@ -33,6 +33,7 @@ export function editProject() {
       const removableOption = getRemovableOption(templateConfig, remove);
       removeGlobs(removableOption);
       removeContent(removableOption);
+      removeTypescriptReferences(removableOption);
     });
   }
 }
@@ -153,6 +154,63 @@ function editEachFile(folderPath: string, contentPattern: string) {
         // recursively go through each directory
         editEachFile(filePath, contentPattern);
       }
+    }
+  });
+}
+
+function removeTypescriptReferences(removableOption: TemplateRemovableOption) {
+  if (
+    removableOption.typescriptReferences &&
+    removableOption.typescriptReferences.length > 0
+  ) {
+    editEachTsConfig(CURR_DIR, removableOption.typescriptReferences);
+  }
+}
+
+function editEachTsConfig(folderPath: string, patterns: string[]) {
+  const files = fs.readdirSync(folderPath);
+  files.forEach((file) => {
+    if (file === 'node_modules') return;
+
+    const filePath = path.join(folderPath, file);
+    const fileStats = fs.statSync(filePath);
+    if (fileStats.isFile()) {
+      if (file === 'tsconfig.json') {
+        const fileContents = fs.readFileSync(filePath, 'utf8');
+        const json = JSON.parse(fileContents);
+
+        // check each reference and see if matches one of the patterns
+        // if it does, splice the item out of the references
+        let editedTheFile = false;
+        if (json.references && json.references.length > 0) {
+          for (let i = json.references.length - 1; i >= 0; i--) {
+            const jsonItem = json.references[i];
+            if (jsonItem.path) {
+              patterns.forEach((pattern) => {
+                if (jsonItem.path.indexOf(pattern) > -1) {
+                  json.references.splice(i, 1);
+                  editedTheFile = true;
+                  return;
+                }
+              });
+            }
+          }
+        }
+
+        if (editedTheFile) {
+          // recreate the file
+          fs.writeFileSync(filePath, '', 'utf8');
+
+          const newFileContents = JSON.stringify(json, null, 2);
+          const newFileLines = newFileContents.split(/\r?\n/);
+          newFileLines.forEach((line, index) => {
+            fs.appendFileSync(filePath, line + os.EOL, 'utf8');
+          });
+        }
+      }
+    } else if (fileStats.isDirectory()) {
+      // recursively go through each directory
+      editEachTsConfig(filePath, patterns);
     }
   });
 }

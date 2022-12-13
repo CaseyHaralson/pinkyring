@@ -11,4 +11,6 @@ export interface TemplateRemovableOption {
   removed?: boolean;
   globPatterns?: string[];
   contentPattern?: string;
+  typescriptReferences?: string[];
+  packageNames?: string[];
 }

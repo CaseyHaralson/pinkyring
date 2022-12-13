@@ -32,6 +32,7 @@ function editProject() {
             const removableOption = getRemovableOption(templateConfig, remove);
             removeGlobs(removableOption);
             removeContent(removableOption);
+            removeTypescriptReferences(removableOption);
         });
     }
 }
@@ -134,6 +135,58 @@ function editEachFile(folderPath, contentPattern) {
                 // recursively go through each directory
                 editEachFile(filePath, contentPattern);
             }
+        }
+    });
+}
+function removeTypescriptReferences(removableOption) {
+    if (removableOption.typescriptReferences &&
+        removableOption.typescriptReferences.length > 0) {
+        editEachTsConfig(CURR_DIR, removableOption.typescriptReferences);
+    }
+}
+function editEachTsConfig(folderPath, patterns) {
+    const files = fs_1.default.readdirSync(folderPath);
+    files.forEach((file) => {
+        if (file === 'node_modules')
+            return;
+        const filePath = path_1.default.join(folderPath, file);
+        const fileStats = fs_1.default.statSync(filePath);
+        if (fileStats.isFile()) {
+            if (file === 'tsconfig.json') {
+                const fileContents = fs_1.default.readFileSync(filePath, 'utf8');
+                const json = JSON.parse(fileContents);
+                // check each reference and see if matches one of the patterns
+                // if it does, splice the item out of the references
+                let editedTheFile = false;
+                if (json.references && json.references.length > 0) {
+                    for (let i = json.references.length - 1; i >= 0; i--) {
+                        const jsonItem = json.references[i];
+                        if (jsonItem.path) {
+                            patterns.forEach((pattern) => {
+                                if (jsonItem.path.indexOf(pattern) > -1) {
+                                    json.references.splice(i, 1);
+                                    editedTheFile = true;
+                                    return;
+                                }
+                            });
+                        }
+                    }
+                }
+                if (editedTheFile) {
+                    // recreate the file
+                    fs_1.default.writeFileSync(filePath, '', 'utf8');
+                    const newFileContents = JSON.stringify(json, null, 2);
+                    const newFileLines = newFileContents.split(/\r?\n/);
+                    const lastLineIndex = newFileLines.length - 1;
+                    newFileLines.forEach((line, index) => {
+                        fs_1.default.appendFileSync(filePath, line + os_1.default.EOL, 'utf8');
+                    });
+                }
+            }
+        }
+        else if (fileStats.isDirectory()) {
+            // recursively go through each directory
+            editEachTsConfig(filePath, patterns);
         }
     });
 }

@@ -6,14 +6,21 @@
       "label": "SERVERLESS",
       "globPatterns": [
         ".github/workflows/serverless.*",
-        "packages/infrastructure/aws/lambdas/src",
-        "packages/infrastructure/aws/lambdas/package.json",
-        "packages/infrastructure/aws/snqs/src",
-        "packages/infrastructure/aws/snqs/package.json",
+        "packages/infrastructure/aws",
         "serverless",
         "serverless.yml"
       ],
-      "contentPattern": ".pinkyring=SERVERLESS"
+      "contentPattern": ".pinkyring=SERVERLESS",
+      "typescriptReferences": ["infrastructure/aws/snqs"],
+      "packageNames": ["@test/infrastructure_aws_lambdas", "@test/infrastructure_aws_snqs"]
+    },
+    {
+      "label": "GITHUB WORKFLOWS",
+      "globPatterns": [".github"]
+    },
+    {
+      "label": "REST ENDPOINTS",
+      "globPatterns": ["packages/apps/api-rest"]
     }
   ]
 }
