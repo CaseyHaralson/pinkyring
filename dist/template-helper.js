@@ -1,5 +1,4 @@
 "use strict";
-//import ejs from 'ejs';
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.render = void 0;
 function render(content, data) {
@@ -12,6 +11,5 @@ function render(content, data) {
         return newContent;
     }
     return content;
-    //return ejs.render(content, data);
 }
 exports.render = render;

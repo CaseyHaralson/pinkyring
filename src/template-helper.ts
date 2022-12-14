@@ -1,5 +1,3 @@
-//import ejs from 'ejs';
-
 export interface TemplateData {
   projectName: string;
   selectedTemplate: string;
@@ -18,5 +16,4 @@ export function render(content: string, data: TemplateData) {
     return newContent;
   }
   return content;
-  //return ejs.render(content, data);
 }
