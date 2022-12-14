@@ -93,6 +93,8 @@ function buildRemovalQuestion(removalChoices: string[]) {
       name: 'remove',
       type: 'list',
       message: 'What would you like to remove?',
+      loop: false,
+      pageSize: 10,
       choices: [...removalChoices, 'Cancel', 'PINKYRING COMMENTS'],
     },
   ];
@@ -330,7 +332,7 @@ function editEachPackageConfig(folderPath: string, names: string[]) {
       }
     } else if (fileStats.isDirectory()) {
       // recursively go through each directory
-      editEachTsConfig(filePath, names);
+      editEachPackageConfig(filePath, names);
     }
   });
 }
@@ -381,7 +383,7 @@ function removeCommentsFromEachFile(
           // recreate the file
           fs.writeFileSync(filePath, '', 'utf8');
 
-          // read each line and remove sections of the content pattern
+          // read each line and remove if the pattern matches
           fileLines.forEach((line, index) => {
             if (line.indexOf(contentPattern) === -1) {
               // append an EOL if not the last line
