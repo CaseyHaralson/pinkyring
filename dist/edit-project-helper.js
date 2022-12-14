@@ -31,6 +31,10 @@ function editProject() {
                 sayGoodbye();
                 return;
             }
+            if (remove === 'PINKYRING COMMENTS') {
+                confirmRemovePinkyringComments(templateConfig);
+                return;
+            }
             const removableOption = getRemovableOption(templateConfig, remove);
             removeGlobs(removableOption);
             removeContent(removableOption);
@@ -49,6 +53,10 @@ function readPinkyringFile() {
         return null;
     }
     const templateConfig = JSON.parse(fs_1.default.readFileSync(pinkyringFilePath, 'utf8'));
+    if (templateConfig.fileLocked === true) {
+        console.log(`All of the pinkyring template comments were removed from this project and the .pinkyring file was locked. No more edits can be made.`);
+        return null;
+    }
     return templateConfig;
 }
 function buildRemovalChoices(templateConfig) {
@@ -69,10 +77,32 @@ function buildRemovalQuestion(removalChoices) {
             name: 'remove',
             type: 'list',
             message: 'What would you like to remove?',
-            choices: [...removalChoices, 'Cancel'],
+            choices: [...removalChoices, 'Cancel', 'PINKYRING COMMENTS'],
         },
     ];
     return questions;
+}
+function confirmRemovePinkyringComments(templateConfig) {
+    const question = [
+        {
+            name: 'remove',
+            type: 'list',
+            message: 'This will remove all the pinkyring comments that allow you to remove pieces of the template. Are you sure?',
+            choices: ['YES', 'NO'],
+        },
+    ];
+    inquirer_1.default.prompt(question).then((answers) => {
+        const remove = answers['remove'];
+        if (remove === 'NO') {
+            editProject();
+        }
+        else {
+            removeAllPinkyringComments(templateConfig);
+            lockPinkyringFile(templateConfig);
+            console.log(chalk_1.default.green(`All the leftover pinkyring template comments were removed!`));
+            sayGoodbye();
+        }
+    });
 }
 function getRemovableOption(templateConfig, remove) {
     let removableOption = null;
@@ -269,6 +299,61 @@ function editEachPackageConfig(folderPath, names) {
 }
 function saveOptionAsRemoved(templateConfig, removableOption) {
     removableOption.removed = true;
+    // recreate the file
+    const pinkyringFilePath = path_1.default.join(CURR_DIR, '.pinkyring.json');
+    fs_1.default.writeFileSync(pinkyringFilePath, '', 'utf8');
+    const newFileContents = JSON.stringify(templateConfig, null, 2);
+    const newFileLines = newFileContents.split(/\r?\n/);
+    newFileLines.forEach((line) => {
+        fs_1.default.appendFileSync(pinkyringFilePath, line + os_1.default.EOL, 'utf8');
+    });
+}
+function removeAllPinkyringComments(templateConfig) {
+    templateConfig.removableOptions.forEach((option) => {
+        if (option.removed !== true) {
+            if (option.contentPattern && option.contentPattern.length > 0) {
+                removeCommentsFromEachFile(CURR_DIR, option.contentPattern);
+            }
+        }
+    });
+}
+function removeCommentsFromEachFile(folderPath, contentPattern) {
+    const files = fs_1.default.readdirSync(folderPath);
+    files.forEach((file) => {
+        if (!CONTENT_TO_SKIP_LINE_EDITS.includes(file)) {
+            const filePath = path_1.default.join(folderPath, file);
+            const fileStats = fs_1.default.statSync(filePath);
+            if (fileStats.isFile()) {
+                // read and edit file if necessary
+                const fileContents = fs_1.default.readFileSync(filePath, 'utf8');
+                if (fileContents.indexOf(contentPattern) !== -1) {
+                    const fileLines = fileContents.split(/\r?\n/);
+                    const lastLineIndex = fileLines.length - 1;
+                    // recreate the file
+                    fs_1.default.writeFileSync(filePath, '', 'utf8');
+                    // read each line and remove sections of the content pattern
+                    fileLines.forEach((line, index) => {
+                        if (line.indexOf(contentPattern) === -1) {
+                            // append an EOL if not the last line
+                            if (index < lastLineIndex) {
+                                fs_1.default.appendFileSync(filePath, line + os_1.default.EOL, 'utf8');
+                            }
+                            else {
+                                fs_1.default.appendFileSync(filePath, line, 'utf8');
+                            }
+                        }
+                    });
+                }
+            }
+            else if (fileStats.isDirectory()) {
+                // recursively go through each directory
+                editEachFile(filePath, contentPattern);
+            }
+        }
+    });
+}
+function lockPinkyringFile(templateConfig) {
+    templateConfig.fileLocked = true;
     // recreate the file
     const pinkyringFilePath = path_1.default.join(CURR_DIR, '.pinkyring.json');
     fs_1.default.writeFileSync(pinkyringFilePath, '', 'utf8');

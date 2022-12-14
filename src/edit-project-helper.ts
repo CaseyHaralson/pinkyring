@@ -30,6 +30,11 @@ export function editProject() {
         return;
       }
 
+      if (remove === 'PINKYRING COMMENTS') {
+        confirmRemovePinkyringComments(templateConfig);
+        return;
+      }
+
       const removableOption = getRemovableOption(templateConfig, remove);
       removeGlobs(removableOption);
       removeContent(removableOption);
@@ -56,6 +61,14 @@ function readPinkyringFile() {
   const templateConfig: IPinkyringConfig = JSON.parse(
     fs.readFileSync(pinkyringFilePath, 'utf8')
   );
+
+  if (templateConfig.fileLocked === true) {
+    console.log(
+      `All of the pinkyring template comments were removed from this project and the .pinkyring file was locked. No more edits can be made.`
+    );
+    return null;
+  }
+
   return templateConfig;
 }
 
@@ -80,10 +93,37 @@ function buildRemovalQuestion(removalChoices: string[]) {
       name: 'remove',
       type: 'list',
       message: 'What would you like to remove?',
-      choices: [...removalChoices, 'Cancel'],
+      choices: [...removalChoices, 'Cancel', 'PINKYRING COMMENTS'],
     },
   ];
   return questions;
+}
+
+function confirmRemovePinkyringComments(templateConfig: IPinkyringConfig) {
+  const question = [
+    {
+      name: 'remove',
+      type: 'list',
+      message:
+        'This will remove all the pinkyring comments that allow you to remove pieces of the template. Are you sure?',
+      choices: ['YES', 'NO'],
+    },
+  ];
+  inquirer.prompt(question).then((answers: Answers) => {
+    const remove = answers['remove'];
+    if (remove === 'NO') {
+      editProject();
+    } else {
+      removeAllPinkyringComments(templateConfig);
+      lockPinkyringFile(templateConfig);
+      console.log(
+        chalk.green(
+          `All the leftover pinkyring template comments were removed!`
+        )
+      );
+      sayGoodbye();
+    }
+  });
 }
 
 function getRemovableOption(templateConfig: IPinkyringConfig, remove: string) {
@@ -300,6 +340,69 @@ function saveOptionAsRemoved(
   removableOption: TemplateRemovableOption
 ) {
   removableOption.removed = true;
+
+  // recreate the file
+  const pinkyringFilePath = path.join(CURR_DIR, '.pinkyring.json');
+  fs.writeFileSync(pinkyringFilePath, '', 'utf8');
+
+  const newFileContents = JSON.stringify(templateConfig, null, 2);
+  const newFileLines = newFileContents.split(/\r?\n/);
+  newFileLines.forEach((line) => {
+    fs.appendFileSync(pinkyringFilePath, line + os.EOL, 'utf8');
+  });
+}
+
+function removeAllPinkyringComments(templateConfig: IPinkyringConfig) {
+  templateConfig.removableOptions.forEach((option) => {
+    if (option.removed !== true) {
+      if (option.contentPattern && option.contentPattern.length > 0) {
+        removeCommentsFromEachFile(CURR_DIR, option.contentPattern);
+      }
+    }
+  });
+}
+
+function removeCommentsFromEachFile(
+  folderPath: string,
+  contentPattern: string
+) {
+  const files = fs.readdirSync(folderPath);
+  files.forEach((file) => {
+    if (!CONTENT_TO_SKIP_LINE_EDITS.includes(file)) {
+      const filePath = path.join(folderPath, file);
+      const fileStats = fs.statSync(filePath);
+      if (fileStats.isFile()) {
+        // read and edit file if necessary
+        const fileContents = fs.readFileSync(filePath, 'utf8');
+        if (fileContents.indexOf(contentPattern) !== -1) {
+          const fileLines = fileContents.split(/\r?\n/);
+          const lastLineIndex = fileLines.length - 1;
+
+          // recreate the file
+          fs.writeFileSync(filePath, '', 'utf8');
+
+          // read each line and remove sections of the content pattern
+          fileLines.forEach((line, index) => {
+            if (line.indexOf(contentPattern) === -1) {
+              // append an EOL if not the last line
+              if (index < lastLineIndex) {
+                fs.appendFileSync(filePath, line + os.EOL, 'utf8');
+              } else {
+                fs.appendFileSync(filePath, line, 'utf8');
+              }
+            }
+          });
+        }
+      } else if (fileStats.isDirectory()) {
+        // recursively go through each directory
+        editEachFile(filePath, contentPattern);
+      }
+    }
+  });
+}
+
+function lockPinkyringFile(templateConfig: IPinkyringConfig) {
+  templateConfig.fileLocked = true;
 
   // recreate the file
   const pinkyringFilePath = path.join(CURR_DIR, '.pinkyring.json');

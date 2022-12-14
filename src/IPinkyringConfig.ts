@@ -1,6 +1,7 @@
 export interface IPinkyringConfig {
   templateName: string;
   pinkyringVersion: string;
+  fileLocked?: boolean;
   removableOptions: TemplateRemovableOption[];
 }
 
