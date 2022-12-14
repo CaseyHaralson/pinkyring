@@ -347,7 +347,7 @@ function removeCommentsFromEachFile(folderPath, contentPattern) {
             }
             else if (fileStats.isDirectory()) {
                 // recursively go through each directory
-                editEachFile(filePath, contentPattern);
+                removeCommentsFromEachFile(filePath, contentPattern);
             }
         }
     });
