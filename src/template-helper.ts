@@ -1,4 +1,4 @@
-import ejs from "ejs";
+//import ejs from 'ejs';
 
 export interface TemplateData {
   projectName: string;
@@ -6,5 +6,17 @@ export interface TemplateData {
 }
 
 export function render(content: string, data: TemplateData) {
-  return ejs.render(content, data);
+  if (content) {
+    const simpleTemplateName = data.selectedTemplate
+      .replaceAll('-', '')
+      .replaceAll('_', '');
+    let newContent = content.replaceAll(
+      data.selectedTemplate,
+      data.projectName
+    );
+    newContent = newContent.replaceAll(simpleTemplateName, data.projectName);
+    return newContent;
+  }
+  return content;
+  //return ejs.render(content, data);
 }
