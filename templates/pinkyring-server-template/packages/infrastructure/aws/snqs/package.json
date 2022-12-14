@@ -1,5 +1,5 @@
 {
-  "name": "@<%= projectName %>/infrastructure_aws_snqs",
+  "name": "@pinkyring-server-template/infrastructure_aws_snqs",
   "exports": {
     "./*": "./build/*.js"
   },
@@ -13,6 +13,6 @@
   "dependencies": {
     "@aws-sdk/client-sns": "^3.216.0",
     "@aws-sdk/client-sqs": "^3.216.0",
-    "@<%= projectName %>/core": "*"
+    "@pinkyring-server-template/core": "*"
   }
 }

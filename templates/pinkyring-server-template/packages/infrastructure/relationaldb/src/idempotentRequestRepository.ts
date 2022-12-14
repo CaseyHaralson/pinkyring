@@ -1,9 +1,9 @@
 import {PrismaClient} from '@prisma/client';
-import IIdempotentRequestRepository from '@<%= projectName %>/core/interfaces/IIdempotentRequestRepository';
+import IIdempotentRequestRepository from '@pinkyring-server-template/core/interfaces/IIdempotentRequestRepository';
 import {PrismaClientKnownRequestError} from '@prisma/client/runtime';
 import BaseClass, {
   IBaseParams,
-} from '@<%= projectName %>/core/util/baseClass';
+} from '@pinkyring-server-template/core/util/baseClass';
 import {ERROR_CODE} from './util/prismaErrors';
 
 /** Idempotent request repository using prisma */

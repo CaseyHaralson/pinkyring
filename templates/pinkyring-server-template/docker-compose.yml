@@ -23,6 +23,7 @@ services:
     ports:
       - 8080:8080
   
+  # .pinkyring=EVENT_SYSTEM
   rabbitmq:
     container_name: rabbitmq
     image: rabbitmq:3.11.2-management-alpine
@@ -35,7 +36,10 @@ services:
       - rabbitmq:/var/lib/rabbitmq
     environment:
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+  # .pinkyring=EVENT_SYSTEM.end
 
 volumes:
   mysql:
+  # .pinkyring=EVENT_SYSTEM
   rabbitmq:
+  # .pinkyring=EVENT_SYSTEM.end

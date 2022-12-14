@@ -1,8 +1,8 @@
-import {BlogPost} from '@<%= projectName %>/core/dtos/blogPost';
-import {DATA_ACTION} from '@<%= projectName %>/core/dtos/dataActions';
-import {DataValidationError} from '@<%= projectName %>/core/dtos/dataValidationError';
-import BlogPostDataValidator from '@<%= projectName %>/infrastructure_data-validations/blogPostDataValidator';
-import {BLOG_POST_TITLE_LENGTH_MAX} from '@<%= projectName %>/infrastructure_data-validations/messages';
+import {BlogPost} from '@pinkyring-server-template/core/dtos/blogPost';
+import {DATA_ACTION} from '@pinkyring-server-template/core/dtos/dataActions';
+import {DataValidationError} from '@pinkyring-server-template/core/dtos/dataValidationError';
+import BlogPostDataValidator from '@pinkyring-server-template/infrastructure_data-validations/blogPostDataValidator';
+import {BLOG_POST_TITLE_LENGTH_MAX} from '@pinkyring-server-template/infrastructure_data-validations/messages';
 import {generateRandomString} from '../util/dataGenerator';
 
 describe('blog post data validator unit tests', () => {

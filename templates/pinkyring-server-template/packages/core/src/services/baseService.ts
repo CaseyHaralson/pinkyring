@@ -1,14 +1,18 @@
-import {BaseEvent} from '../dtos/events';
 import Principal from '../interfaces/IPrincipal';
 import {ConfigKey} from '../interfaces/IConfig';
 import BaseClass, {IBaseParams} from '../util/baseClass';
+// .pinkyring=EVENT_SYSTEM
+import {BaseEvent} from '../dtos/events';
 import EventHelper from '../util/eventHelper';
+// .pinkyring=EVENT_SYSTEM.end
 import IdempotentRequestHelper from '../util/idempotentRequestHelper';
 import ISessionHandler from '../interfaces/ISession';
 
 export interface IBaseServiceParams extends IBaseParams {
   idempotentRequestHelper: IdempotentRequestHelper;
+  // .pinkyring=EVENT_SYSTEM
   eventHelper: EventHelper;
+  // .pinkyring=EVENT_SYSTEM.end
   sessionHandler: ISessionHandler;
 }
 
@@ -75,6 +79,7 @@ export default abstract class BaseService extends BaseClass {
     );
   }
 
+  // .pinkyring=EVENT_SYSTEM
   /**
    * Publishes an event to the underlying event system.
    * @param event the event to publish
@@ -83,4 +88,5 @@ export default abstract class BaseService extends BaseClass {
   protected async publishEvent(event: BaseEvent): Promise<boolean> {
     return await this._baseServiceParams.eventHelper.publishEvent(event);
   }
+  // .pinkyring=EVENT_SYSTEM.end
 }

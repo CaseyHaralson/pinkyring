@@ -1,5 +1,5 @@
 {
-  "name": "@<%= projectName %>/infrastructure_util",
+  "name": "@pinkyring-server-template/infrastructure_util",
   "exports": {
     "./*": "./build/*.js"
   },
@@ -11,7 +11,7 @@
     }
   },
   "dependencies": {
-    "@<%= projectName %>/core": "*",
+    "@pinkyring-server-template/core": "*",
     "cls-hooked": "^4.2.2",
     "dotenv": "^16.0.3",
     "find-up": "^5.0.0",

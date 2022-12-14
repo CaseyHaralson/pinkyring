@@ -1,8 +1,8 @@
-import Principal from '@<%= projectName %>/core/interfaces/IPrincipal';
+import Principal from '@pinkyring-server-template/core/interfaces/IPrincipal';
 import {v4 as uuidv4} from 'uuid';
 import BaseClass, {
   IBaseParams,
-} from '@<%= projectName %>/core/util/baseClass';
+} from '@pinkyring-server-template/core/util/baseClass';
 
 /**
  * Resolves security principals based on the information defined in the resolve function.

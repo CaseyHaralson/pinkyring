@@ -1,30 +1,32 @@
 import {asClass, asFunction, asValue, AwilixContainer} from 'awilix';
 import ConfigHelper, {
   Environment,
-} from '@<%= projectName %>/core/util/configHelper';
-import ConfigFileReader from '@<%= projectName %>/infrastructure_util/configFileReader';
-import LocalEventRepository from '@<%= projectName %>/infrastructure_queue/eventRepository';
+} from '@pinkyring-server-template/core/util/configHelper';
+import ConfigFileReader from '@pinkyring-server-template/infrastructure_util/configFileReader';
+// .pinkyring=EVENT_SYSTEM
+import EventHelper from '@pinkyring-server-template/core/util/eventHelper';
+import LocalEventRepository from '@pinkyring-server-template/infrastructure_queue/eventRepository';
+import IntegrationTestHelperQueueRepository from '@pinkyring-server-template/infrastructure_queue/integrationTestHelperQueueRepository';
 // .pinkyring=SERVERLESS
-import ServerEventRepository from '@<%= projectName %>/infrastructure_aws_snqs/eventRepository';
+import ServerEventRepository from '@pinkyring-server-template/infrastructure_aws_snqs/eventRepository';
 // .pinkyring=SERVERLESS.end
-import Logger from '@<%= projectName %>/core/util/logger';
-import LogHandler from '@<%= projectName %>/infrastructure_util/logHandler';
-import {IBaseParams} from '@<%= projectName %>/core/util/baseClass';
-import IdempotentRequestHelper from '@<%= projectName %>/core/util/idempotentRequestHelper';
-import IdempotentRequestRepository from '@<%= projectName %>/infrastructure_relationaldb/idempotentRequestRepository';
-import EventHelper from '@<%= projectName %>/core/util/eventHelper';
-import {IBaseServiceParams} from '@<%= projectName %>/core/services/baseService';
-import BlogService from '@<%= projectName %>/core/services/blogService';
-import BlogRepository from '@<%= projectName %>/infrastructure_relationaldb/blogRepository';
-import MaintenanceService from '@<%= projectName %>/core/services/maintenanceService';
-import PrismaClientFactory from '@<%= projectName %>/infrastructure_relationaldb/util/prismaClientFactory';
-import PrincipalResolver from '@<%= projectName %>/infrastructure_util/principalResolver';
-import SessionHandler from '@<%= projectName %>/infrastructure_util/sessionHandler';
-import SubscriptionService from '@<%= projectName %>/core/services/subscriptionService';
-import AuthorDataValidator from '@<%= projectName %>/infrastructure_data-validations/authorDataValidator';
-import BlogPostDataValidator from '@<%= projectName %>/infrastructure_data-validations/blogPostDataValidator';
-import IntegrationTestHelperDbRepository from '@<%= projectName %>/infrastructure_relationaldb/integrationTestHelperDbRepository';
-import IntegrationTestHelperQueueRepository from '@<%= projectName %>/infrastructure_queue/integrationTestHelperQueueRepository';
+// .pinkyring=EVENT_SYSTEM.end
+import Logger from '@pinkyring-server-template/core/util/logger';
+import LogHandler from '@pinkyring-server-template/infrastructure_util/logHandler';
+import {IBaseParams} from '@pinkyring-server-template/core/util/baseClass';
+import IdempotentRequestHelper from '@pinkyring-server-template/core/util/idempotentRequestHelper';
+import IdempotentRequestRepository from '@pinkyring-server-template/infrastructure_relationaldb/idempotentRequestRepository';
+import {IBaseServiceParams} from '@pinkyring-server-template/core/services/baseService';
+import BlogService from '@pinkyring-server-template/core/services/blogService';
+import BlogRepository from '@pinkyring-server-template/infrastructure_relationaldb/blogRepository';
+import MaintenanceService from '@pinkyring-server-template/core/services/maintenanceService';
+import PrismaClientFactory from '@pinkyring-server-template/infrastructure_relationaldb/util/prismaClientFactory';
+import PrincipalResolver from '@pinkyring-server-template/infrastructure_util/principalResolver';
+import SessionHandler from '@pinkyring-server-template/infrastructure_util/sessionHandler';
+import SubscriptionService from '@pinkyring-server-template/core/services/subscriptionService';
+import AuthorDataValidator from '@pinkyring-server-template/infrastructure_data-validations/authorDataValidator';
+import BlogPostDataValidator from '@pinkyring-server-template/infrastructure_data-validations/blogPostDataValidator';
+import IntegrationTestHelperDbRepository from '@pinkyring-server-template/infrastructure_relationaldb/integrationTestHelperDbRepository';
 
 export default function loadContainer(container: AwilixContainer) {
   loadConfigHelper(container);
@@ -59,7 +61,9 @@ const loadConfigHelper = function (container: AwilixContainer) {
 
 const loadLocalItems = function (container: AwilixContainer) {
   container.register({
+    // .pinkyring=EVENT_SYSTEM
     eventRepository: asClass(LocalEventRepository),
+    // .pinkyring=EVENT_SYSTEM.end
   });
 };
 
@@ -73,9 +77,11 @@ const loadTestItems = function (container: AwilixContainer) {
     integrationTestHelperDbRepository: asClass(
       IntegrationTestHelperDbRepository
     ),
+    // .pinkyring=EVENT_SYSTEM
     integrationTestHelperQueueRepository: asClass(
       IntegrationTestHelperQueueRepository
     ),
+    // .pinkyring=EVENT_SYSTEM.end
   });
 };
 
@@ -86,9 +92,11 @@ const loadTestItems = function (container: AwilixContainer) {
 
 const loadServerItems = function (container: AwilixContainer) {
   container.register({
+    // .pinkyring=EVENT_SYSTEM
     // .pinkyring=SERVERLESS
     eventRepository: asClass(ServerEventRepository),
     // .pinkyring=SERVERLESS.end
+    // .pinkyring=EVENT_SYSTEM.end
   });
 };
 
@@ -116,14 +124,18 @@ const loadGenericItems = function (container: AwilixContainer) {
     }),
     idempotentRequestHelper: asClass(IdempotentRequestHelper),
     idempotentRequestRepository: asClass(IdempotentRequestRepository),
+    // .pinkyring=EVENT_SYSTEM
     eventHelper: asClass(EventHelper),
+    // .pinkyring=EVENT_SYSTEM.end
     sessionHandler: asClass(SessionHandler),
     baseServiceParams: asFunction(() => {
       return {
         logger: container.cradle.logger,
         configHelper: container.cradle.configHelper,
         idempotentRequestHelper: container.cradle.idempotentRequestHelper,
+        // .pinkyring=EVENT_SYSTEM
         eventHelper: container.cradle.eventHelper,
+        // .pinkyring=EVENT_SYSTEM.end
         sessionHandler: container.cradle.sessionHandler,
       } as IBaseServiceParams;
     }),

@@ -1,5 +1,7 @@
 import {Author, BlogPost} from '../dtos/blogPost';
+// .pinkyring=EVENT_SYSTEM
 import {BlogPostAddedEvent, EventType} from '../dtos/events';
+// .pinkyring=EVENT_SYSTEM.end
 import Principal from '../interfaces/IPrincipal';
 import IBlogRepository from '../interfaces/IBlogRepository';
 import BaseService, {IBaseServiceParams} from './baseService';
@@ -109,6 +111,7 @@ export default class BlogService extends BaseService {
         }
       );
 
+      // .pinkyring=EVENT_SYSTEM
       if (blogPostAdded) {
         this._logger.info('publishing the blog post added event');
         await this.publishEvent({
@@ -119,6 +122,7 @@ export default class BlogService extends BaseService {
           },
         } as BlogPostAddedEvent);
       }
+      // .pinkyring=EVENT_SYSTEM.end
 
       return requestResult;
     });

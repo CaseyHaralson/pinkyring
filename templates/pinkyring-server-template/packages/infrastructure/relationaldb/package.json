@@ -1,5 +1,5 @@
 {
-  "name": "@<%= projectName %>/infrastructure_relationaldb",
+  "name": "@pinkyring-server-template/infrastructure_relationaldb",
   "prisma": {
     "seed": "node prisma/seed.js"
   },
@@ -18,7 +18,7 @@
     }
   },
   "dependencies": {
-    "@<%= projectName %>/core": "*",
+    "@pinkyring-server-template/core": "*",
     "@prisma/client": "^4.5.0"
   },
   "devDependencies": {

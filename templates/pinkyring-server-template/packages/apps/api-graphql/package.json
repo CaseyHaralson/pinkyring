@@ -1,13 +1,13 @@
 {
-  "name": "@<%= projectName %>/apps_api-graphql",
+  "name": "@pinkyring-server-template/apps_api-graphql",
   "main": "build/app.js",
   "scripts": {
     "build": "tsc -b",
     "start": "node ."
   },
   "dependencies": {
-    "@<%= projectName %>/core": "*",
-    "@<%= projectName %>/di-container": "*",
+    "@pinkyring-server-template/core": "*",
+    "@pinkyring-server-template/di-container": "*",
     "dataloader": "^2.1.0",
     "graphql-yoga": "^3.0.0-next.12"
   }

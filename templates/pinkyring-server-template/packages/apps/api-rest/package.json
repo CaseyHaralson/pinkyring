@@ -1,13 +1,13 @@
 {
-  "name": "@<%= projectName %>/apps_api-rest",
+  "name": "@pinkyring-server-template/apps_api-rest",
   "main": "build/app.js",
   "scripts": {
     "build": "tsc -b",
     "start": "node ."
   },
   "dependencies": {
-    "@<%= projectName %>/core": "*",
-    "@<%= projectName %>/di-container": "*",
+    "@pinkyring-server-template/core": "*",
+    "@pinkyring-server-template/di-container": "*",
     "express": "^4.18.2"
   },
   "devDependencies": {

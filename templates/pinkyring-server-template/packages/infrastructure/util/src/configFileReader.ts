@@ -1,8 +1,8 @@
-import {IConfigFileReader} from '@<%= projectName %>/core/interfaces/IConfig';
+import {IConfigFileReader} from '@pinkyring-server-template/core/interfaces/IConfig';
 import findUp from 'find-up';
 import dotenv, {DotenvParseOutput} from 'dotenv';
 import fs from 'fs';
-import {CONFIGKEYNAME_PROJECTDATA_PREFIX} from '@<%= projectName %>/core/interfaces/IConfig';
+import {CONFIGKEYNAME_PROJECTDATA_PREFIX} from '@pinkyring-server-template/core/interfaces/IConfig';
 
 /** Config file reader using multiple tools to find and read files */
 // can't extend the BaseClass because one of the the base class parameters needs this as a parameter

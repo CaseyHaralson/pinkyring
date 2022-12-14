@@ -3,12 +3,12 @@ import {
   ILogHandler,
   LogContext,
   LogLevel,
-} from '@<%= projectName %>/core/interfaces/ILog';
+} from '@pinkyring-server-template/core/interfaces/ILog';
 import BaseClass, {
   IBaseParams,
-} from '@<%= projectName %>/core/util/baseClass';
-import {CONFIGKEYNAME_PROJECTDATA_PREFIX} from '@<%= projectName %>/core/interfaces/IConfig';
-import {Environment} from '@<%= projectName %>/core/util/configHelper';
+} from '@pinkyring-server-template/core/util/baseClass';
+import {CONFIGKEYNAME_PROJECTDATA_PREFIX} from '@pinkyring-server-template/core/interfaces/IConfig';
+import {Environment} from '@pinkyring-server-template/core/util/configHelper';
 
 const CONFIGKEYNAME_PROJECT_NAME = `${CONFIGKEYNAME_PROJECTDATA_PREFIX}NAME`;
 const CONFIGKEYNAME_PROJECT_VERSION = `${CONFIGKEYNAME_PROJECTDATA_PREFIX}VERSION`;

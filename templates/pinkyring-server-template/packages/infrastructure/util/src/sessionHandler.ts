@@ -1,11 +1,11 @@
-import Principal from '@<%= projectName %>/core/interfaces/IPrincipal';
+import Principal from '@pinkyring-server-template/core/interfaces/IPrincipal';
 import ISessionHandler, {
   SessionData,
-} from '@<%= projectName %>/core/interfaces/ISession';
+} from '@pinkyring-server-template/core/interfaces/ISession';
 import {createNamespace, getNamespace, Namespace} from 'cls-hooked';
 import {v4 as uuidv4} from 'uuid';
 
-const NAMESPACE_NAME = '<%= projectName %>.session';
+const NAMESPACE_NAME = 'pinkyring-server-template.session';
 const SESSION_DATA = 'session.data';
 
 /** Session handler using cls-hooked */

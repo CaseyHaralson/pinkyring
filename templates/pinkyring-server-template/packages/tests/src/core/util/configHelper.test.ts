@@ -1,10 +1,10 @@
 import {
   IConfigFileReader,
   ISecretRepository,
-} from '@<%= projectName %>/core/interfaces/IConfig';
+} from '@pinkyring-server-template/core/interfaces/IConfig';
 import ConfigHelper, {
   Environment,
-} from '@<%= projectName %>/core/util/configHelper';
+} from '@pinkyring-server-template/core/util/configHelper';
 import {mock, mockReset} from 'jest-mock-extended';
 
 describe('config helper unit tests', () => {

@@ -23,6 +23,7 @@ services:
     ports:
       - 8080:8080
   
+  # .pinkyring=EVENT_SYSTEM
   rabbitmq:
     container_name: rabbitmq
     image: rabbitmq:3.11.2-management-alpine
@@ -35,6 +36,7 @@ services:
       - rabbitmq:/var/lib/rabbitmq
     environment:
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+  # .pinkyring=EVENT_SYSTEM.end
   
   # waits for the db to be available then runs migrations and seeds the database
   prisma:
@@ -51,13 +53,16 @@ services:
     environment:
       MYSQL_DATABASE_URL: ${MYSQL_DATABASE_URL_DOCKER}
   
+  # .pinkyring=GRAPHQL
   app-api-graphql:
     container_name: app.api-graphql
     depends_on:
       mysql:
         condition: service_started
+      # .pinkyring=EVENT_SYSTEM
       rabbitmq:
         condition: service_started
+      # .pinkyring=EVENT_SYSTEM.end
       prisma:
         condition: service_completed_successfully
     build:
@@ -70,15 +75,21 @@ services:
       - ./:/code
     environment:
       MYSQL_DATABASE_URL: ${MYSQL_DATABASE_URL_DOCKER}
+      # .pinkyring=EVENT_SYSTEM
       RABBITMQ_URL: ${RABBITMQ_URL_DOCKER}
+      # .pinkyring=EVENT_SYSTEM.end
+  # .pinkyring=GRAPHQL.end
   
+  # .pinkyring=REST_ENDPOINTS
   app-api-rest:
     container_name: app.api-rest
     depends_on:
       mysql:
         condition: service_started
+      # .pinkyring=EVENT_SYSTEM
       rabbitmq:
         condition: service_started
+      # .pinkyring=EVENT_SYSTEM.end
       prisma:
         condition: service_completed_successfully
     build:
@@ -91,15 +102,21 @@ services:
       - ./:/code
     environment:
       MYSQL_DATABASE_URL: ${MYSQL_DATABASE_URL_DOCKER}
+      # .pinkyring=EVENT_SYSTEM
       RABBITMQ_URL: ${RABBITMQ_URL_DOCKER}
+      # .pinkyring=EVENT_SYSTEM.end
+  # .pinkyring=REST_ENDPOINTS.end
   
+  # .pinkyring=CRON_JOBS
   app-cron-jobs:
     container_name: app.cron-jobs
     depends_on:
       mysql:
         condition: service_started
+      # .pinkyring=EVENT_SYSTEM
       rabbitmq:
         condition: service_started
+      # .pinkyring=EVENT_SYSTEM.end
       prisma:
         condition: service_completed_successfully
     build:
@@ -110,10 +127,14 @@ services:
       - ./:/code
     environment:
       MYSQL_DATABASE_URL: ${MYSQL_DATABASE_URL_DOCKER}
+      # .pinkyring=EVENT_SYSTEM
       RABBITMQ_URL: ${RABBITMQ_URL_DOCKER}
+      # .pinkyring=EVENT_SYSTEM.end
     # can start immediately, so needs to wait on mysql to startup before running
     command: ../../../docker/wait-for.sh mysql:3306 -t 120 -- npm run start
+  # .pinkyring=CRON_JOBS.end
 
+  # .pinkyring=EVENT_SYSTEM
   app-event-handlers:
     container_name: app.event-handlers
     depends_on:
@@ -134,7 +155,10 @@ services:
       RABBITMQ_URL: ${RABBITMQ_URL_DOCKER}
     # starts immediately, so needs to wait on rabbitmq to startup before running
     command: ../../../docker/wait-for.sh rabbitmq:5672 -t 120 -- npm run start
+  # .pinkyring=EVENT_SYSTEM.end
 
 volumes:
   mysql:
+  # .pinkyring=EVENT_SYSTEM
   rabbitmq:
+  # .pinkyring=EVENT_SYSTEM.end

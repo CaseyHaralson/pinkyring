@@ -1,5 +1,5 @@
 {
-  "name": "@<%= projectName %>/core",
+  "name": "@pinkyring-server-template/core",
   "exports": {
     "./*": "./build/*.js"
   },

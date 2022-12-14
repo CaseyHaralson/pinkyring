@@ -1,5 +1,5 @@
 {
-  "name": "@<%= projectName %>/infrastructure_data-validations",
+  "name": "@pinkyring-server-template/infrastructure_data-validations",
   "exports": {
     "./*": "./build/*.js"
   },
@@ -11,7 +11,7 @@
     }
   },
   "dependencies": {
-    "@<%= projectName %>/core": "*",
+    "@pinkyring-server-template/core": "*",
     "yup": "^1.0.0-beta.8"
   }
 }

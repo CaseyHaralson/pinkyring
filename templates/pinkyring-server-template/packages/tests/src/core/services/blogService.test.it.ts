@@ -1,17 +1,21 @@
+// .pinkyring=EVENT_SYSTEM
 import {
   EVENT_BUS_NAME,
   EventType,
   BlogPostAddedEvent,
-} from '@<%= projectName %>/core/dtos/events';
-import container from '@<%= projectName %>/di-container/container';
+} from '@pinkyring-server-template/core/dtos/events';
+// .pinkyring=EVENT_SYSTEM.end
+import container from '@pinkyring-server-template/di-container/container';
 import {v4 as uuidv4} from 'uuid';
 
 describe('todo service integration tests', () => {
   const service = container.resolveBlogService();
   const helperDbRepo = container.resolveIntegrationTestHelperDbRepository();
+  // .pinkyring=EVENT_SYSTEM
   const helperQueueRepo =
     container.resolveIntegrationTestHelperQueueRepository();
   const eventHelper = container.resolveEventHelper();
+  // .pinkyring=EVENT_SYSTEM.end
 
   const principal = container
     .resolvePrincipalResolver()
@@ -36,8 +40,10 @@ describe('todo service integration tests', () => {
       await helperDbRepo.deleteAuthor(author.id);
     });
 
+    // .pinkyring=EVENT_SYSTEM
     // delete test queue
     await helperQueueRepo.deleteQueue(queueName);
+    // .pinkyring=EVENT_SYSTEM.end
   });
 
   describe(`get blog posts function`, () => {
@@ -101,6 +107,7 @@ describe('todo service integration tests', () => {
       expect(foundBlogPosts[0].text).toBe(blogPost.text);
     });
 
+    // .pinkyring=EVENT_SYSTEM
     test('should publish event', async () => {
       await eventHelper.createQueue(
         queueName,
@@ -131,6 +138,7 @@ describe('todo service integration tests', () => {
         expect(blogPostAddedEvent.eventData.blogPostId).toBe(blogPost.id);
       }
     });
+    // .pinkyring=EVENT_SYSTEM.end
   });
 
   describe(`update blog post function`, () => {

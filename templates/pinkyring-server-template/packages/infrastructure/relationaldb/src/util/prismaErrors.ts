@@ -1,4 +1,4 @@
-import {DataValidationError} from '@<%= projectName %>/core/dtos/dataValidationError';
+import {DataValidationError} from '@pinkyring-server-template/core/dtos/dataValidationError';
 import {PrismaClientKnownRequestError} from '@prisma/client/runtime';
 
 /** Prisma error codes for different scenarios */

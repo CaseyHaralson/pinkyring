@@ -1,12 +1,12 @@
-import IEventRepository from '@<%= projectName %>/core/interfaces/IEventRepository';
+import IEventRepository from '@pinkyring-server-template/core/interfaces/IEventRepository';
 import {
   BaseEvent,
   EventType,
-} from '@<%= projectName %>/core/dtos/events';
+} from '@pinkyring-server-template/core/dtos/events';
 import {SNS} from '@aws-sdk/client-sns';
 import BaseClass, {
   IBaseParams,
-} from '@<%= projectName %>/core/util/baseClass';
+} from '@pinkyring-server-template/core/util/baseClass';
 
 const CONFIGKEYNAME_AWS_REGION = 'AWS_REGION'; // env variable set by AWS
 const CONFIGKEYNAME_BLOGPOST_ADDED_TOPIC_ARN = 'BLOGPOST_ADDED_TOPIC_ARN';

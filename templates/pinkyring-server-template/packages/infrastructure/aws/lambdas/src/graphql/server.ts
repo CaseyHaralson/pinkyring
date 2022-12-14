@@ -3,9 +3,9 @@ import {startServerAndCreateLambdaHandler} from '@as-integrations/aws-lambda';
 import {
   resolvers,
   typeDefs,
-} from '@<%= projectName %>/core/graphql/schema';
-import {IContext} from '@<%= projectName %>/core/graphql/IContext';
-import container from '@<%= projectName %>/di-container/container';
+} from '@pinkyring-server-template/core/graphql/schema';
+import {IContext} from '@pinkyring-server-template/core/graphql/IContext';
+import container from '@pinkyring-server-template/di-container/container';
 import DataLoader from 'dataloader';
 import {GraphQLError} from 'graphql';
 

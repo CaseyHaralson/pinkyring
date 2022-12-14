@@ -1,5 +1,5 @@
-import BaseClass from '@<%= projectName %>/core/util/baseClass';
-import {IBaseParams} from '@<%= projectName %>/core/util/baseClass';
+import BaseClass from '@pinkyring-server-template/core/util/baseClass';
+import {IBaseParams} from '@pinkyring-server-template/core/util/baseClass';
 import {PrismaClient} from '@prisma/client';
 
 /** Integration test helper class to expose functionality that shouldn't be generally available */

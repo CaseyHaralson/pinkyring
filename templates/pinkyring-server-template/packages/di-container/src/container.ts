@@ -1,15 +1,17 @@
 import {createContainer, AwilixContainer} from 'awilix';
-import BlogService from '@<%= projectName %>/core/services/blogService';
-import EventHelper from '@<%= projectName %>/core/util/eventHelper';
+import BlogService from '@pinkyring-server-template/core/services/blogService';
+// .pinkyring=EVENT_SYSTEM
+import EventHelper from '@pinkyring-server-template/core/util/eventHelper';
+import IntegrationTestHelperQueueRepository from '@pinkyring-server-template/infrastructure_queue/integrationTestHelperQueueRepository';
+// .pinkyring=EVENT_SYSTEM.end
 import ConfigHelper, {
   Environment,
-} from '@<%= projectName %>/core/util/configHelper';
-import MaintenanceService from '@<%= projectName %>/core/services/maintenanceService';
+} from '@pinkyring-server-template/core/util/configHelper';
+import MaintenanceService from '@pinkyring-server-template/core/services/maintenanceService';
 import loadContainer from './containerLoader';
-import PrincipalResolver from '@<%= projectName %>/infrastructure_util/principalResolver';
-import SubscriptionService from '@<%= projectName %>/core/services/subscriptionService';
-import IntegrationTestHelperDbRepository from '@<%= projectName %>/infrastructure_relationaldb/integrationTestHelperDbRepository';
-import IntegrationTestHelperQueueRepository from '@<%= projectName %>/infrastructure_queue/integrationTestHelperQueueRepository';
+import PrincipalResolver from '@pinkyring-server-template/infrastructure_util/principalResolver';
+import SubscriptionService from '@pinkyring-server-template/core/services/subscriptionService';
+import IntegrationTestHelperDbRepository from '@pinkyring-server-template/infrastructure_relationaldb/integrationTestHelperDbRepository';
 
 const awilix_container = createContainer({injectionMode: 'CLASSIC'});
 
@@ -54,6 +56,7 @@ class Container {
     return this._container.cradle.configHelper as ConfigHelper;
   }
 
+  // .pinkyring=EVENT_SYSTEM
   /**
    * Resolves the configured EventHelper object.
    * This is exposed so an event listener app can interact with the underlying event system.
@@ -62,6 +65,7 @@ class Container {
   resolveEventHelper() {
     return this._container.cradle.eventHelper as EventHelper;
   }
+  // .pinkyring=EVENT_SYSTEM.end
 
   // ==================================================
   //             TEST ENVIRONMENT ONLY
@@ -77,6 +81,7 @@ class Container {
       .integrationTestHelperDbRepository as IntegrationTestHelperDbRepository;
   }
 
+  // .pinkyring=EVENT_SYSTEM
   /** Test environment only: Resolves the configured IntegrationTestHelperQueueRepository. */
   resolveIntegrationTestHelperQueueRepository() {
     if (this.resolveConfigHelper().getEnvironment() !== Environment.TEST) {
@@ -87,6 +92,7 @@ class Container {
     return this._container.cradle
       .integrationTestHelperQueueRepository as IntegrationTestHelperQueueRepository;
   }
+  // .pinkyring=EVENT_SYSTEM.end
 
   // ==================================================
 }

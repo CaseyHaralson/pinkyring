@@ -1,4 +1,4 @@
-import container from '@<%= projectName %>/di-container/container';
+import container from '@pinkyring-server-template/di-container/container';
 
 const service = container.resolveMaintenanceService();
 const principal = container

@@ -3,11 +3,11 @@ import {createServer} from 'node:http';
 import {
   typeDefs,
   resolvers,
-} from '@<%= projectName %>/core/graphql/schema';
-import container from '@<%= projectName %>/di-container/container';
+} from '@pinkyring-server-template/core/graphql/schema';
+import container from '@pinkyring-server-template/di-container/container';
 import DataLoader from 'dataloader';
 import {GraphQLError} from 'graphql';
-import {IContext} from '@<%= projectName %>/core/graphql/IContext';
+import {IContext} from '@pinkyring-server-template/core/graphql/IContext';
 
 // ======================================
 // Get configurations
