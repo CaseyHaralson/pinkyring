@@ -1,0 +1,72 @@
+name: Continuous Integration Checks
+
+on:
+  pull_request:
+    types:
+      - opened
+      - edited
+      - synchronize
+      - reopened
+  workflow_call:
+
+jobs:
+  unit-test:
+    name: Unit test application
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: '☁️ checkout repository'
+        uses: actions/checkout@v3
+
+      - name: '🔧 setup node'
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: '📦 install dependencies'
+        uses: bahmutov/npm-install@v1
+
+      - name: '🔍 run unit tests'
+        run: npm run test:unit --if-present
+
+  integration-test:
+    name: Integration test application
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: '☁️ checkout repository'
+        uses: actions/checkout@v3
+
+      - name: '🔧 setup node'
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: '📦 install dependencies'
+        uses: bahmutov/npm-install@v1
+
+      - name: '🔍 run integration tests'
+        run: npm run test:it --if-present
+
+  style-and-lint:
+    name: Code standards
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: '☁️ checkout repository'
+        uses: actions/checkout@v3
+
+      - name: '🔧 setup node'
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: '📦 install dependencies'
+        uses: bahmutov/npm-install@v1
+
+      - name: '🔍 prettier check code'
+        run: npm run prettier:check --if-present
+
+      - name: '🔍 lint code'
+        if: success() || failure()
+        run: npm run lint --if-present
