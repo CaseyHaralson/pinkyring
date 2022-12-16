@@ -35,11 +35,11 @@ It uses npm workspaces to separate functionality into different packages.
 
 It comes with the following as a starting point:
 
-- Github Workflows *pinkyring removable*
+- Github Workflows [^1]
   - CodeQL Analysis
   - Serverless Framework Deploy and Teardown into AWS
   - CI with unit and integration tests, and style/linting checks
-- Serverless Framework *pinkyring removable*
+- Serverless Framework [^1]
   - Configuration to deploy the following to AWS:
     - GraphQL Lambda
     - DB Migration Dockerfile/Lambda with Prisma
@@ -49,14 +49,16 @@ It comes with the following as a starting point:
 - Code Style Rules
   - ESLint
   - Prettier
-- REST Endpoints *pinkyring removable*
-- Graphql Endpoint *pinkyring removable*
+- REST Endpoints [^1]
+- Graphql Endpoint [^1]
 - Prisma Database Stuff
 - Winston Logging
 - Yup data validations
 - Jest tests
-- Cron maintenance jobs *pinkyring removable*
-- Event bus/queue interactions with RabbitMQ *pinkyring removable*
+- Cron maintenance jobs [^1]
+- Event bus/queue interactions with RabbitMQ [^1]
+
+[^1]: Removable with pinkyring
 
 
 Does pinkyring need to be installed? Or can you run it by "npx pinkyring"?
