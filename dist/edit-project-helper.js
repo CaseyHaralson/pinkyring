@@ -61,7 +61,7 @@ function readPinkyringFile() {
 }
 function buildRemovalChoices(templateConfig) {
     //console.log(`Template config: ${JSON.stringify(templateConfig)}`);
-    let choices = [];
+    const choices = [];
     templateConfig.removableOptions.forEach((option) => {
         if (option.removed === null ||
             option.removed === undefined ||
@@ -268,7 +268,7 @@ function editEachPackageConfig(folderPath, names) {
                 let editedTheFile = false;
                 if (json.dependencies) {
                     names.forEach((name) => {
-                        if (json.dependencies.hasOwnProperty(name)) {
+                        if (Object.prototype.hasOwnProperty.call(json.dependencies, name)) {
                             delete json.dependencies[name];
                             editedTheFile = true;
                         }
@@ -276,7 +276,7 @@ function editEachPackageConfig(folderPath, names) {
                 }
                 if (json.devDependencies) {
                     names.forEach((name) => {
-                        if (json.devDependencies.hasOwnProperty(name)) {
+                        if (Object.prototype.hasOwnProperty.call(json.devDependencies, name)) {
                             delete json.devDependencies[name];
                             editedTheFile = true;
                         }

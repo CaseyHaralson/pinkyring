@@ -74,7 +74,7 @@ function readPinkyringFile() {
 
 function buildRemovalChoices(templateConfig: IPinkyringConfig) {
   //console.log(`Template config: ${JSON.stringify(templateConfig)}`);
-  let choices: string[] = [];
+  const choices: string[] = [];
   templateConfig.removableOptions.forEach((option) => {
     if (
       option.removed === null ||
@@ -119,9 +119,7 @@ function confirmAndRemovePinkyringHooks(templateConfig: IPinkyringConfig) {
       removeAllPinkyringHooks(templateConfig);
       lockPinkyringFile(templateConfig);
       console.log(
-        chalk.green(
-          `All the leftover pinkyring template hooks were removed!`
-        )
+        chalk.green(`All the leftover pinkyring template hooks were removed!`)
       );
       sayGoodbye();
     }
@@ -304,7 +302,7 @@ function editEachPackageConfig(folderPath: string, names: string[]) {
         let editedTheFile = false;
         if (json.dependencies) {
           names.forEach((name) => {
-            if (json.dependencies.hasOwnProperty(name)) {
+            if (Object.prototype.hasOwnProperty.call(json.dependencies, name)) {
               delete json.dependencies[name];
               editedTheFile = true;
             }
@@ -312,7 +310,9 @@ function editEachPackageConfig(folderPath: string, names: string[]) {
         }
         if (json.devDependencies) {
           names.forEach((name) => {
-            if (json.devDependencies.hasOwnProperty(name)) {
+            if (
+              Object.prototype.hasOwnProperty.call(json.devDependencies, name)
+            ) {
               delete json.devDependencies[name];
               editedTheFile = true;
             }
@@ -364,10 +364,7 @@ function removeAllPinkyringHooks(templateConfig: IPinkyringConfig) {
   });
 }
 
-function removeHooksFromEachFile(
-  folderPath: string,
-  contentPattern: string
-) {
+function removeHooksFromEachFile(folderPath: string, contentPattern: string) {
   const files = fs.readdirSync(folderPath);
   files.forEach((file) => {
     if (!CONTENT_TO_SKIP_LINE_EDITS.includes(file)) {
