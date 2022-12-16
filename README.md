@@ -61,7 +61,7 @@ It comes with the following as a starting point:
 [^1]: Removable with pinkyring
 
 ## Development Mode
-The rest of this document will be about the development of this project, not the templates. If you are interested in the development of a project based on a template, check out the project source readme either in your project or from the appropriate link in the [templates section](#templates).
+The rest of this document will be about the development of this project, not the templates. If you are interested in the development of a project based on a template, check out the project source readme in your project or from the appropriate link in the [templates section](#templates).
 
 ### Local Pinkyring Install
 
@@ -74,6 +74,16 @@ The rest of this document will be about the development of this project, not the
 Now `pinkyring` can be run from the command line using the local version.
 
 ### Adding New Template Options
-Templates can be added to the list of new project options by pasting the template project into the "templates" directory.
+The templates should have a .pinkyring.json file in the root of the project that adheres to the [IPinkyringConfig.ts file](./src/IPinkyringConfig.ts) from the src directory. An example .pinkyring.json implementation can be found [here](./templates/pinkyring-server-template/.pinkyring.json).
 
-The templates should have a .pinkyring.json file included that adheres to the [IPinkyringConfig.ts file](./src/IPinkyringConfig.ts) from the src directory. An example .pinkyring.json implementation can be found [here](./templates/pinkyring-server-template/.pinkyring.json).
+1. Clean the project of all files and folders that aren't tracked in source control, and then remove the source control folder.
+2. Copy the cleaned project template into the templates directory of this project.
+
+If you are running pinkyring locally, then you should now have access to the updated project.
+
+### Updating Existing Template Options
+1. Clean the project of all files and folders that aren't tracked in source control, and then remove the source control folder.
+2. Delete the existing template project in the templates directory of this project.
+3. Copy the cleaned project template into the templates directory of this project.
+
+If you are running pinkyring locally, then you should now have access to the updated project.

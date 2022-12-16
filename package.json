@@ -1,5 +1,7 @@
 {
   "name": "pinkyring",
+  "version": "0.1.0",
+  "private": true,
   "bin": {
     "pinkyring": "./entry-file.js"
   },
