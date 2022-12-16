@@ -30,8 +30,8 @@ export function editProject() {
         return;
       }
 
-      if (remove === 'PINKYRING COMMENTS') {
-        confirmRemovePinkyringComments(templateConfig);
+      if (remove === 'PINKYRING HOOKS') {
+        confirmRemovePinkyringHooks(templateConfig);
         return;
       }
 
@@ -64,7 +64,7 @@ function readPinkyringFile() {
 
   if (templateConfig.fileLocked === true) {
     console.log(
-      `All of the pinkyring template comments were removed from this project and the .pinkyring file was locked. No more edits can be made.`
+      `All of the pinkyring template hooks were removed from this project and the .pinkyring file was locked. No more edits can be made.`
     );
     return null;
   }
@@ -95,19 +95,19 @@ function buildRemovalQuestion(removalChoices: string[]) {
       message: 'What would you like to remove?',
       loop: false,
       pageSize: 10,
-      choices: [...removalChoices, 'Cancel', 'PINKYRING COMMENTS'],
+      choices: [...removalChoices, 'Cancel', 'PINKYRING HOOKS'],
     },
   ];
   return questions;
 }
 
-function confirmRemovePinkyringComments(templateConfig: IPinkyringConfig) {
+function confirmRemovePinkyringHooks(templateConfig: IPinkyringConfig) {
   const question = [
     {
       name: 'remove',
       type: 'list',
       message:
-        'This will remove all the pinkyring comments that allow you to remove pieces of the template. Are you sure?',
+        'This will remove all the pinkyring hooks that allow you to remove pieces of the template. Are you sure?',
       choices: ['YES', 'NO'],
     },
   ];
@@ -116,11 +116,11 @@ function confirmRemovePinkyringComments(templateConfig: IPinkyringConfig) {
     if (remove === 'NO') {
       editProject();
     } else {
-      removeAllPinkyringComments(templateConfig);
+      removeAllPinkyringHooks(templateConfig);
       lockPinkyringFile(templateConfig);
       console.log(
         chalk.green(
-          `All the leftover pinkyring template comments were removed!`
+          `All the leftover pinkyring template hooks were removed!`
         )
       );
       sayGoodbye();
@@ -354,17 +354,17 @@ function saveOptionAsRemoved(
   });
 }
 
-function removeAllPinkyringComments(templateConfig: IPinkyringConfig) {
+function removeAllPinkyringHooks(templateConfig: IPinkyringConfig) {
   templateConfig.removableOptions.forEach((option) => {
     if (option.removed !== true) {
       if (option.contentPattern && option.contentPattern.length > 0) {
-        removeCommentsFromEachFile(CURR_DIR, option.contentPattern);
+        removeHooksFromEachFile(CURR_DIR, option.contentPattern);
       }
     }
   });
 }
 
-function removeCommentsFromEachFile(
+function removeHooksFromEachFile(
   folderPath: string,
   contentPattern: string
 ) {
@@ -397,7 +397,7 @@ function removeCommentsFromEachFile(
         }
       } else if (fileStats.isDirectory()) {
         // recursively go through each directory
-        removeCommentsFromEachFile(filePath, contentPattern);
+        removeHooksFromEachFile(filePath, contentPattern);
       }
     }
   });

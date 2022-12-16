@@ -31,8 +31,8 @@ function editProject() {
                 sayGoodbye();
                 return;
             }
-            if (remove === 'PINKYRING COMMENTS') {
-                confirmRemovePinkyringComments(templateConfig);
+            if (remove === 'PINKYRING HOOKS') {
+                confirmRemovePinkyringHooks(templateConfig);
                 return;
             }
             const removableOption = getRemovableOption(templateConfig, remove);
@@ -54,7 +54,7 @@ function readPinkyringFile() {
     }
     const templateConfig = JSON.parse(fs_1.default.readFileSync(pinkyringFilePath, 'utf8'));
     if (templateConfig.fileLocked === true) {
-        console.log(`All of the pinkyring template comments were removed from this project and the .pinkyring file was locked. No more edits can be made.`);
+        console.log(`All of the pinkyring template hooks were removed from this project and the .pinkyring file was locked. No more edits can be made.`);
         return null;
     }
     return templateConfig;
@@ -79,17 +79,17 @@ function buildRemovalQuestion(removalChoices) {
             message: 'What would you like to remove?',
             loop: false,
             pageSize: 10,
-            choices: [...removalChoices, 'Cancel', 'PINKYRING COMMENTS'],
+            choices: [...removalChoices, 'Cancel', 'PINKYRING HOOKS'],
         },
     ];
     return questions;
 }
-function confirmRemovePinkyringComments(templateConfig) {
+function confirmRemovePinkyringHooks(templateConfig) {
     const question = [
         {
             name: 'remove',
             type: 'list',
-            message: 'This will remove all the pinkyring comments that allow you to remove pieces of the template. Are you sure?',
+            message: 'This will remove all the pinkyring hooks that allow you to remove pieces of the template. Are you sure?',
             choices: ['YES', 'NO'],
         },
     ];
@@ -99,9 +99,9 @@ function confirmRemovePinkyringComments(templateConfig) {
             editProject();
         }
         else {
-            removeAllPinkyringComments(templateConfig);
+            removeAllPinkyringHooks(templateConfig);
             lockPinkyringFile(templateConfig);
-            console.log(chalk_1.default.green(`All the leftover pinkyring template comments were removed!`));
+            console.log(chalk_1.default.green(`All the leftover pinkyring template hooks were removed!`));
             sayGoodbye();
         }
     });
@@ -310,16 +310,16 @@ function saveOptionAsRemoved(templateConfig, removableOption) {
         fs_1.default.appendFileSync(pinkyringFilePath, line + os_1.default.EOL, 'utf8');
     });
 }
-function removeAllPinkyringComments(templateConfig) {
+function removeAllPinkyringHooks(templateConfig) {
     templateConfig.removableOptions.forEach((option) => {
         if (option.removed !== true) {
             if (option.contentPattern && option.contentPattern.length > 0) {
-                removeCommentsFromEachFile(CURR_DIR, option.contentPattern);
+                removeHooksFromEachFile(CURR_DIR, option.contentPattern);
             }
         }
     });
 }
-function removeCommentsFromEachFile(folderPath, contentPattern) {
+function removeHooksFromEachFile(folderPath, contentPattern) {
     const files = fs_1.default.readdirSync(folderPath);
     files.forEach((file) => {
         if (!CONTENT_TO_SKIP_LINE_EDITS.includes(file)) {
@@ -349,7 +349,7 @@ function removeCommentsFromEachFile(folderPath, contentPattern) {
             }
             else if (fileStats.isDirectory()) {
                 // recursively go through each directory
-                removeCommentsFromEachFile(filePath, contentPattern);
+                removeHooksFromEachFile(filePath, contentPattern);
             }
         }
     });
