@@ -63,7 +63,7 @@ It comes with the following as a starting point:
 ## Development Mode
 The rest of this document will be about the development of this project, not the templates. If you are interested in the development of a project based on a template, check out the project source readme either in your project or from the appropriate link in the [templates section](#templates).
 
-### Local Install
+### Local Pinkyring Install
 
 `npm install`
 
@@ -71,5 +71,9 @@ The rest of this document will be about the development of this project, not the
 
 `npm link`
 
-Now "pinkyring" can be run from the command line using the local version.
+Now `pinkyring` can be run from the command line using the local version.
 
+### Adding New Template Options
+Templates can be added to the list of new project options by pasting the template project into the "templates" directory.
+
+The templates should have a .pinkyring.json file included that adheres to the [IPinkyringConfig.ts file](./src/IPinkyringConfig.ts) from the src directory. An example .pinkyring.json implementation can be found [here](./templates/pinkyring-server-template/.pinkyring.json).
