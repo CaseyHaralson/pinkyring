@@ -8,7 +8,8 @@ Note: requires node to be installed.
 To create a new project from one of the [templates](#templates):
 1. Run the pinkyring command: `npx pinkyring`
 2. Select "Create new project"
-3. Type in the name of your project
+3. Select the template
+4. Type in the name of your project
 
 A new project from the selected template will be created in the current directory. Change to the new project folder and open the readme.
 
@@ -34,11 +35,11 @@ It uses npm workspaces to separate functionality into different packages.
 
 It comes with the following as a starting point:
 
-- Github Workflows
+- Github Workflows *pinkyring removable*
   - CodeQL Analysis
   - Serverless Framework Deploy and Teardown into AWS
   - CI with unit and integration tests, and style/linting checks
-- Serverless Framework
+- Serverless Framework *pinkyring removable*
   - Configuration to deploy the following to AWS:
     - GraphQL Lambda
     - DB Migration Dockerfile/Lambda with Prisma
@@ -48,14 +49,14 @@ It comes with the following as a starting point:
 - Code Style Rules
   - ESLint
   - Prettier
-- REST Endpoints
-- Graphql Endpoint
+- REST Endpoints *pinkyring removable*
+- Graphql Endpoint *pinkyring removable*
 - Prisma Database Stuff
 - Winston Logging
 - Yup data validations
 - Jest tests
-- Cron maintenance jobs
-- Event bus/queue interactions with RabbitMQ
+- Cron maintenance jobs *pinkyring removable*
+- Event bus/queue interactions with RabbitMQ *pinkyring removable*
 
 
 Does pinkyring need to be installed? Or can you run it by "npx pinkyring"?
