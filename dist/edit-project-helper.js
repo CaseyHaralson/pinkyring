@@ -32,7 +32,7 @@ function editProject() {
                 return;
             }
             if (remove === 'PINKYRING HOOKS') {
-                confirmRemovePinkyringHooks(templateConfig);
+                confirmAndRemovePinkyringHooks(templateConfig);
                 return;
             }
             const removableOption = getRemovableOption(templateConfig, remove);
@@ -84,7 +84,7 @@ function buildRemovalQuestion(removalChoices) {
     ];
     return questions;
 }
-function confirmRemovePinkyringHooks(templateConfig) {
+function confirmAndRemovePinkyringHooks(templateConfig) {
     const question = [
         {
             name: 'remove',

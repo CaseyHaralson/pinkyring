@@ -60,10 +60,10 @@ It comes with the following as a starting point:
 
 [^1]: Removable with pinkyring
 
+## Development Mode
+The rest of this document will be about the development of this project, not the templates. If you are interested in the development of a project based on a template, check out the project source readme either in your project or from the appropriate link in the [templates section](#templates).
 
-Does pinkyring need to be installed? Or can you run it by "npx pinkyring"?
-
-Locally, need to install like:
+### Local Install
 
 `npm install`
 
@@ -71,5 +71,5 @@ Locally, need to install like:
 
 `npm link`
 
-Now can run "pinkyring" from the command line.
+Now "pinkyring" can be run from the command line using the local version.
 
