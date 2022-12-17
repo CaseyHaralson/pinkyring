@@ -12,15 +12,19 @@
     "url": "https://github.com/CaseyHaralson/pinkyring/issues"
   },
   "license": "",
-  "bin": {
-    "pinkyring": "./entry-file.js"
-  },
-  "main": "dist/index.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/CaseyHaralson/pinkyring.git"
   },
   "author": "Casey Haralson",
+  "bin": {
+    "pinkyring": "./entry-file.js"
+  },
+  "main": "dist/index.js",
+  "files": [
+    "dist",
+    "templates"
+  ],
   "scripts": {
     "build": "npx rimraf ./dist && tsc -b",
     "prettier": "npx prettier --write .",
