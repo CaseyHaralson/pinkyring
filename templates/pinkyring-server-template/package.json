@@ -1,6 +1,6 @@
 {
   "name": "pinkyring-server-template",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "everything": "npm run build && npm run generate:env && docker compose -f docker-compose.run-everything.yml up -d",

@@ -19,10 +19,26 @@ env:
   # .pinkyring=EVENT_SYSTEM.end
 
 jobs:
+  sha-pinned-actions:
+    name: SHA pinned github actions
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: '☁️ checkout repository'
+        uses: actions/checkout@v3
+      
+      - name: '🔧 ensure SHA pinned actions'
+        uses: zgosalvez/github-actions-ensure-sha-pinned-actions@af2eb3226618e2494e3d9084f515ad6dcf16e229
+        with:
+          allowlist: |
+            actions/
+            github/
+
   unit-test:
     name: Unit test application
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    needs: sha-pinned-actions
     steps:
       - name: '☁️ checkout repository'
         uses: actions/checkout@v3
@@ -33,7 +49,7 @@ jobs:
           node-version: 18
 
       - name: '📦 install dependencies'
-        uses: bahmutov/npm-install@v1
+        uses: bahmutov/npm-install@1a235c31658a322a3b024444759650ee6345c26d
 
       - name: '🔍 run unit tests'
         run: npm run test:unit --if-present
@@ -42,6 +58,7 @@ jobs:
     name: Integration test application
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    needs: sha-pinned-actions
     services:
       mysql:
         image: mysql:5.7
@@ -68,7 +85,7 @@ jobs:
           node-version: 18
 
       - name: '🔧 create env file'
-        uses: SpicyPizza/create-envfile@v1.3
+        uses: SpicyPizza/create-envfile@041383d6577d09916e24632ef274f18ec2909b4f
         with:
           envkey_NODE_ENV: 'test'
           envkey_MYSQL_DATABASE_URL: mysql://${{env.MYSQL_USER}}:${{env.MYSQL_ROOT_PASSWORD}}@127.0.0.1:3306/${{env.MYSQL_DATABASE}}
@@ -79,7 +96,7 @@ jobs:
           envkey_IDEMPOTENT_REQUESTS_TIMEDOUT_SECONDS: '60'
 
       - name: '📦 install dependencies'
-        uses: bahmutov/npm-install@v1
+        uses: bahmutov/npm-install@1a235c31658a322a3b024444759650ee6345c26d
 
       - name: '🔧 setup prisma - generate'
         run: npm run prisma generate
@@ -97,6 +114,7 @@ jobs:
     name: Code standards
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    needs: sha-pinned-actions
     steps:
       - name: '☁️ checkout repository'
         uses: actions/checkout@v3
@@ -107,7 +125,7 @@ jobs:
           node-version: 18
 
       - name: '📦 install dependencies'
-        uses: bahmutov/npm-install@v1
+        uses: bahmutov/npm-install@1a235c31658a322a3b024444759650ee6345c26d
 
       - name: '🔍 prettier check code'
         run: npm run prettier:check --if-present

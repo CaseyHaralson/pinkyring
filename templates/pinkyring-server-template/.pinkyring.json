@@ -1,6 +1,6 @@
 {
   "templateName": "pinkyring-server-template",
-  "pinkyringVersion": "0.1.0",
+  "pinkyringVersion": "1.0.0",
   "removableOptions": [
     {
       "label": "SERVERLESS",

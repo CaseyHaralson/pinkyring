@@ -1,7 +1,7 @@
 # pinkyring-server-template
 
 This project was created with the Pinkyring project creator.
-Please check that documentation to create another project or to remove some pre-installed code from this project.
+Please check that documentation to create another project or to remove some pre-installed code from this project:
 https://github.com/CaseyHaralson/pinkyring
 
 This project comes with the following as a starting point:
@@ -53,7 +53,7 @@ This project comes with the following as a starting point:
 [//]: # (.pinkyring=CRON_JOBS.end)
 [//]: # (.pinkyring=EVENT_SYSTEM)
 
-- Event bus/queue interactions with RabbitMQ [^1]
+- Event bus/queue interactions with RabbitMQ/Serverless [^1]
 
 [//]: # (.pinkyring=EVENT_SYSTEM.end)
 
@@ -186,7 +186,7 @@ There is a security principal resolver in the infrastructure/util package. This 
 The session is currently used as a way of passing data around for logging. The ISession interface in the core/interfaces folder defines what data is in the session. The SessionHandler in the infrastructure/util package creates and serves out session data.
 
 #### Idempotent Requests
-Idempotent requests are requests that need to only have an effect once, but will return the same result every time they are called. Making idempotent requests as small as possible can help with timeout and failure issues.
+Idempotent requests are requests that need to only have an effect once, but will return the same result every time they are called. Making idempotent request logic as small as possible can help with timeout and failure issues.
 
 The idempotent request helper will take a requestId from the client and save the result of the request. It will then return that same result if it receives that requestId again. The request is unique by a combination of principal, service, function, and requestId.
 
@@ -206,7 +206,7 @@ Events are a way that the services can handle some things asynchronously. They a
 [//]: # (.pinkyring=EVENT_SYSTEM.end)
 
 #### Data Validations
-There is a specific package for basic data validations in the infrastructure/data-validations package. These can do validations before hitting the database and it's possible to publish this package so UI projects can run data validations before sending data to the server.
+There is a specific package for basic data validations in the infrastructure/data-validations package. These can do validations before hitting the database, and it's possible to publish this package so UI projects can run data validations before sending data to the server.
 
 There are also some data validations done at the database level. These validations can be seen in the infrastructure/relationaldb/util folder in the prismaErrors file.
 
@@ -319,17 +319,18 @@ If you want to develop this project and another project (e.g. a UI project) simu
 #### Setup
 1. In this project, run `npm run dev-link` to build a global package link to this project
 2. In the other project (UI project), create a "dev-link" package.json script with the following:
-  - "npm link @pinkyring-server-template/core @pinkyring-server-template/infrastructure_data-validations"
+    - "npm link @pinkyring-server-template/core @pinkyring-server-template/infrastructure_data-validations"
 
 #### During Development
 1. In this project, run `npm run build:watch` to continually build changed files
 2. In the other project (UI project), run `npm run dev-link`
-  - this may need to be run any time `npm install` is run in the other project (UI project)
+    - this may need to be run any time `npm install` is run in the other project (UI project)
+      - Context on why this can happen: if this project is set as a dependency then "npm install" will overwrite the link with the dependency version. After that happens, the link will need to be recreated.
 
 #### Adding This Project as a Dependency
-Before adding a package.json dependency reference to one of these published packages, the packages must be published at least once. A dependency on a linked project won't work without one "real" publish. 
+Before adding a package.json dependency reference (UI project) to one of these published packages, the packages must be published at least once. A dependency on a linked project won't work without one "real" publish because npm won't be able to find the package. 
 
-You can always create the development links without a real publish, but you can't add the dependency reference until this project has been published once.
+You can always create the development links without a real publish to start with, and add a dependency reference later. But, make sure to do a publish and set the dependency before trying to run the other project (UI project) in a non-local environment.
 
 [//]: # (.pinkyring=SERVERLESS)
 

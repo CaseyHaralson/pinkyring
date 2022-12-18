@@ -19,7 +19,7 @@ jobs:
         timeout-minutes: 1
 
       - name: '📦 install dependencies'
-        uses: bahmutov/npm-install@v1
+        uses: bahmutov/npm-install@1a235c31658a322a3b024444759650ee6345c26d
         timeout-minutes: 1
 
       - name: '📦 build project'
