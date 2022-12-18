@@ -10,10 +10,22 @@ on:
   workflow_call:
 
 jobs:
+  sha-pinned-actions:
+    name: SHA pinned github actions
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: '☁️ checkout repository'
+        uses: actions/checkout@v3
+      
+      - name: '🔧 ensure SHA pinned actions'
+        uses: zgosalvez/github-actions-ensure-sha-pinned-actions@v2
+
   unit-test:
     name: Unit test application
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    needs: sha-pinned-actions
     steps:
       - name: '☁️ checkout repository'
         uses: actions/checkout@v3
@@ -33,6 +45,7 @@ jobs:
     name: Integration test application
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    needs: sha-pinned-actions
     steps:
       - name: '☁️ checkout repository'
         uses: actions/checkout@v3
@@ -52,6 +65,7 @@ jobs:
     name: Code standards
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    needs: sha-pinned-actions
     steps:
       - name: '☁️ checkout repository'
         uses: actions/checkout@v3
