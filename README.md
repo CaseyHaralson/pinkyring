@@ -1,6 +1,6 @@
 # pinkyring
 
-A node project generator that allows you to try a project, and then remove the pieces you don't want.
+A node project generator that allows you to try a project template, and then remove the pieces you don't want.
 
 ## New Project
 Note: requires node to be installed.
