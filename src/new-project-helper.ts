@@ -1,8 +1,11 @@
 import fs from 'fs';
 import path from 'path';
 import chalk from 'chalk';
+import os from 'os';
 import {render, TemplateData} from './template-helper';
 import inquirer, {Answers} from 'inquirer';
+
+const STARTING_VERSION_NUMBER = '0.1.0';
 
 const CURR_DIR = process.cwd();
 const CHOICES = fs.readdirSync(path.join(__dirname, '..', 'templates'));
@@ -91,6 +94,12 @@ function createDirectoryContents(
     if (fileStats.isFile()) {
       let fileContents = fs.readFileSync(origFilePath, 'utf8');
       fileContents = render(fileContents, templateData);
+
+      // if the file is a package.json file, reset the version if needed
+      if (file === 'package.json') {
+        fileContents = resetVersionNumber(fileContents);
+      }
+
       const writePath = path.join(CURR_DIR, newProjectPath, file);
       fs.writeFileSync(writePath, fileContents, 'utf8');
     } else if (fileStats.isDirectory()) {
@@ -104,4 +113,17 @@ function createDirectoryContents(
       );
     }
   });
+}
+
+function resetVersionNumber(packageJsonFileContents: string) {
+  const json = JSON.parse(packageJsonFileContents);
+  if (Object.prototype.hasOwnProperty.call(json, 'version')) {
+    // set the version to the starting version number
+    json['version'] = STARTING_VERSION_NUMBER;
+
+    // return the new file contents as a string
+    let newFileContents = JSON.stringify(json, null, 2);
+    newFileContents = newFileContents.replaceAll(/\r?\n/g, os.EOL);
+    return newFileContents;
+  } else return packageJsonFileContents;
 }
