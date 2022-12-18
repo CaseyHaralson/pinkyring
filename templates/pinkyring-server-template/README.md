@@ -8,7 +8,7 @@ This project comes with the following as a starting point:
 
 [//]: # (.pinkyring=GITHUB_WORKFLOWS)
 
-- Github Workflows
+- Github Workflows [^1]
   - CodeQL Analysis
   - Serverless Framework Deploy and Teardown into AWS
   - CI with unit and integration tests, and style/linting checks
@@ -16,7 +16,7 @@ This project comes with the following as a starting point:
 [//]: # (.pinkyring=GITHUB_WORKFLOWS.end)
 [//]: # (.pinkyring=SERVERLESS)
 
-- Serverless Framework
+- Serverless Framework [^1]
   - Configuration to deploy the following to AWS:
     - GraphQL Lambda
     - DB Migration Dockerfile/Lambda with Prisma
@@ -32,12 +32,12 @@ This project comes with the following as a starting point:
 
 [//]: # (.pinkyring=REST_ENDPOINTS)
 
-- REST Endpoints
+- REST Endpoints [^1]
 
 [//]: # (.pinkyring=REST_ENDPOINTS.end)
 [//]: # (.pinkyring=GRAPHQL)
 
-- Graphql Endpoint
+- Graphql Endpoint [^1]
 
 [//]: # (.pinkyring=GRAPHQL.end)
 
@@ -48,14 +48,16 @@ This project comes with the following as a starting point:
 
 [//]: # (.pinkyring=CRON_JOBS)
 
-- Cron maintenance jobs
+- Cron maintenance jobs [^1]
 
 [//]: # (.pinkyring=CRON_JOBS.end)
 [//]: # (.pinkyring=EVENT_SYSTEM)
 
-- Event bus/queue interactions with RabbitMQ
+- Event bus/queue interactions with RabbitMQ [^1]
 
 [//]: # (.pinkyring=EVENT_SYSTEM.end)
+
+[^1]: Removable with pinkyring
 
 ## Project Structure
 
@@ -248,11 +250,6 @@ Example (save some package to infrastructure util package):
 
 `npm install <npm package> --save -w packages/infrastructure/util`
 
-#### Prisma Commands
-You can run prisma commands from the root project with the following command. There is a script that handles these commands and will also try to take care of keeping a local .env file in sync with the parent .env file.
-
-`npm run prisma <prisma command>`
-
 #### VS Code Typescript Intellisense
 If VS Code intellisense isn't working after some change, the following steps can help:
 
@@ -260,12 +257,79 @@ If VS Code intellisense isn't working after some change, the following steps can
 2. `npm run build`
 3. With a typescript file open, open the command palette (maybe ctrl + shift + p), and then select Typescript: Restart TS server
 
-## Published Package
+#### Prisma Commands
+You can run prisma commands from the root project with the following command. There is a script that handles these commands and will also try to take care of keeping a local .env file in sync with the parent .env file.
+
+`npm run prisma <prisma command>`
+
+#### Replacing Prisma
+Prisma can be switched out for some other database helper/ORM by changing the following:
+- the docker Dockerfile.prisma file
+- the docker compose run-everything file
+- the relationaldb package infrastructure project
+
+[//]: # (.pinkyring=GITHUB_WORKFLOWS)
+
+- the github ci-check workflow
+
+[//]: # (.pinkyring=SERVERLESS)
+
+- the github serverless.deploy workflow
+
+[//]: # (.pinkyring=SERVERLESS.end)
+[//]: # (.pinkyring=GITHUB_WORKFLOWS.end)
+[//]: # (.pinkyring=SERVERLESS)
+
+- the serverless.yml file and the serverless dbmigration files
+
+[//]: # (.pinkyring=SERVERLESS.end)
+
+#### Replacing MySQL
+MySQL can be switched out for some other database by changing the following:
+- the docker compose files
+- the prisma schema file and migrations
+
+[//]: # (.pinkyring=GITHUB_WORKFLOWS)
+
+- the github ci-check workflow
+
+[//]: # (.pinkyring=GITHUB_WORKFLOWS.end)
+[//]: # (.pinkyring=SERVERLESS)
+
+- the serverless.yml file and the serverless rds resource file
+
+[//]: # (.pinkyring=SERVERLESS.end)
+
+## Published Packages
 The project can publish several things to help other projects interface with it. The core/dtos folder and the infrastructure/data-validations packages can be published which will give access to:
 - the different object types the project is expecting
 - data validations for the different objects
 - the events that are published
 - expected errors the project can throw
+
+Once you figure out a versioning scheme, and where you want to publish the packages, there is a npm script set up to help with publishing. Running `npm run pub` from the top level project will currently: 
+- build the project
+- copy the version from the main project.json file over to the different projects (if those projects don't have a version specified)
+- run the associated "pub" commands in the core and infrastructure/data-validations packages
+  - the "pub" commands in those packages will need to be filled out to handle publishing
+
+### Using the Published Packages in Local Development
+If you want to develop this project and another project (e.g. a UI project) simultaneously:
+
+#### Setup
+1. In this project, run `npm run dev-link` to build a global package link to this project
+2. In the other project (UI project), create a "dev-link" package.json script with the following:
+  - "npm link @pinkyring-server-template/core @pinkyring-server-template/infrastructure_data-validations"
+
+#### During Development
+1. In this project, run `npm run build:watch` to continually build changed files
+2. In the other project (UI project), run `npm run dev-link`
+  - this may need to be run any time `npm install` is run in the other project (UI project)
+
+#### Adding This Project as a Dependency
+Before adding a package.json dependency reference to one of these published packages, the packages must be published at least once. A dependency on a linked project won't work without one "real" publish. 
+
+You can always create the development links without a real publish, but you can't add the dependency reference until this project has been published once.
 
 [//]: # (.pinkyring=SERVERLESS)
 

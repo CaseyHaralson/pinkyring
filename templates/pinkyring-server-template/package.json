@@ -19,7 +19,13 @@
     "test:unit:watch": "npx jest --config packages/tests/jest.config.unit.ts.js --watch",
     "test:it": "npm run build && npx jest --detectOpenHandles --config packages/tests/jest.config.it.js",
     "prisma": "cd packages/infrastructure/relationaldb/prisma && node ./run-prisma-command.js",
-    "clean": "npm run build:clean && rimraf **/.env && rimraf **/node_modules"
+    "clean-template": "npm run build:clean && rimraf **/.env && rimraf package-lock.json && rimraf **/node_modules",
+    "pub": "npm run build && node version-copier.js && npm run pub:core && npm run pub:data-validations",
+    "pub:core": "cd packages/core && npm run pub",
+    "pub:data-validations": "cd packages/infrastructure/data-validations && npm run pub",
+    "dev-link": "npm run dev-link:core && npm run dev-link:data-validations",
+    "dev-link:core": "cd packages/core && npm link",
+    "dev-link:data-validations": "cd packages/infrastructure/data-validations && npm link"
   },
   "workspaces": [
     "packages/**/*"
