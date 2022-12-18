@@ -12,6 +12,18 @@ datasource db {
   url      = env("MYSQL_DATABASE_URL")
 }
 
+// npm run prisma generate        (generates the javascript types)
+// npm run prisma studio          (website to view the data)
+// npm run prisma migrate dev     (generate migration file that you might have to modify to keep data intact)
+// npm run prisma migrate dev -- --create-only   (creates the migration but doesn't apply it, so it can be edited) 
+//                                        (run "npx prisma migrate dev" to apply edited migration)
+//                                        (might need to run migrate reset if you have been using db push for prototyping)
+// npm run prisma db push         (can delete current data to update database) (fast for prototyping)
+// npm run prisma db push -- --force-reset   (clears the database)
+// npm run prisma migrate reset   (drops and recreates the database, runs migrations, then seeds the database)
+// npm run prisma migrate deploy  (runs migrations against the environment)
+// npm run prisma db seed         (seed the database with the file selected in the package.json file -> prisma.seed section)
+
 model BlogPost {
   id String @id @default(cuid())
   title String

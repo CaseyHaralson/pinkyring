@@ -2,8 +2,8 @@
   "name": "@pinkyring-server-template/apps_cron-jobs",
   "main": "build/app.js",
   "scripts": {
-    "build": "tsc -b",
-    "start": "node ."
+    "start": "node .",
+    "start:watch": "nodemon ."
   },
   "dependencies": {
     "@pinkyring-server-template/core": "*",
@@ -11,6 +11,7 @@
     "node-cron": "^3.0.2"
   },
   "devDependencies": {
-    "@types/node-cron": "^3.0.6"
+    "@types/node-cron": "^3.0.6",
+    "nodemon": "^2.0.20"
   }
 }

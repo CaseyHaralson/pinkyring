@@ -1,7 +1,6 @@
-import {Author} from '../dtos/blogPost';
 import Principal from '../interfaces/IPrincipal';
 import BlogService from '../services/blogService';
-import {IDataLoader, IDataLoaderConstructable} from './IDataLoader';
+import {IDataLoaderConstructable, IDataLoaders} from './IDataLoader';
 import {IKnownErrorConstructable} from './IKnownErrorConstructable';
 
 /** Context object that should be loaded and injected into the resolver functions. */
@@ -10,5 +9,5 @@ export interface IContext {
   blogService: BlogService;
   dataLoaderConstructable: IDataLoaderConstructable;
   knownErrorConstructable: IKnownErrorConstructable;
-  authorDataLoader?: IDataLoader<string, Author>;
+  dataLoaders?: IDataLoaders;
 }

@@ -2,8 +2,8 @@
   "name": "@pinkyring-server-template/apps_api-rest",
   "main": "build/app.js",
   "scripts": {
-    "build": "tsc -b",
-    "start": "node ."
+    "start": "node .",
+    "start:watch": "nodemon ."
   },
   "dependencies": {
     "@pinkyring-server-template/core": "*",
@@ -11,6 +11,7 @@
     "express": "^4.18.2"
   },
   "devDependencies": {
-    "@types/express": "^4.17.14"
+    "@types/express": "^4.17.14",
+    "nodemon": "^2.0.20"
   }
 }

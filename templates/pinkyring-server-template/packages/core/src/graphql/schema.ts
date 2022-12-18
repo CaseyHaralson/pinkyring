@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {BlogPost} from '../dtos/blogPost';
 import {IContext} from './IContext';
-import {createDataLoaders} from './IDataLoader';
+import {DATALOADER_NAME, getDataLoader} from './IDataLoader';
 import {throwKnownErrors} from './IKnownErrorConstructable';
 
 /** The project graphql type definitions */
@@ -54,8 +54,7 @@ export const resolvers = {
   },
   BlogPost: {
     author(obj: BlogPost, args: any, context: IContext, info: any) {
-      createDataLoaders(context);
-      return context.authorDataLoader?.load(obj.authorId);
+      return getDataLoader(context, DATALOADER_NAME.AUTHOR)?.load(obj.authorId);
     },
   },
   Mutation: {

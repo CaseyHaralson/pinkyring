@@ -3,7 +3,8 @@ const path = require('path');
 const os = require('os');
 
 // if .env file doesn't exist
-// read .env.example
+// read the .env.example file
+// and generate the .env from the example
 
 // for each ${generated_*_number} generate a *
 // then write each line to a .env file
@@ -60,7 +61,7 @@ function returnGenerated(variable) {
   }
 
   throw new Error(
-    `A new .env generated type was encountered but with no handler. Check .env.example for the type and .env-maker.js for the handler. Variable: ${variable}`
+    `A new .env generated type was encountered but with no handler. Check .env.example for the type and .env.maker.js for the handler. Variable: ${variable}`
   );
 }
 

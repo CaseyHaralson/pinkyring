@@ -50,6 +50,10 @@ jobs:
 
       - name: '📦 install dependencies'
         uses: bahmutov/npm-install@1a235c31658a322a3b024444759650ee6345c26d
+      
+      # the Prisma type doesn't have all the extensions until after it is generated
+      - name: '🔧 setup prisma - generate'
+        run: npm run prisma generate
 
       - name: '🔍 run unit tests'
         run: npm run test:unit --if-present

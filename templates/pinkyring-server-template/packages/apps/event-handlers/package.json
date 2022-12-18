@@ -2,11 +2,14 @@
   "name": "@pinkyring-server-template/apps_event-handlers",
   "main": "build/app.js",
   "scripts": {
-    "build": "tsc -b",
-    "start": "node ."
+    "start": "node .",
+    "start:watch": "nodemon ."
   },
   "dependencies": {
     "@pinkyring-server-template/core": "*",
     "@pinkyring-server-template/di-container": "*"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
   }
 }
