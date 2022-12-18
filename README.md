@@ -77,12 +77,14 @@ Now `pinkyring` can be run from the command line using the local version.
 The template should have a .pinkyring.json file in the root of the project that adheres to the [IPinkyringConfig.ts file](./src/IPinkyringConfig.ts) from the src directory. An example .pinkyring.json implementation can be found [here](./templates/pinkyring-server-template/.pinkyring.json).
 
 1. Clean the project of all files and folders that aren't tracked in source control, and then remove the source control folder.
+- There is a npm script ([clean-template](./templates/pinkyring-server-template/package.json)) in the pinkyring-server-template that resets the project except for removing the source control folder. This can be used as a starting point for the new template.
 2. Copy the cleaned project template into the templates directory of this project.
 
 If you are running pinkyring locally, then you should now have access to the new project template when creating a new project.
 
 ### Updating Existing Template Options
 1. Clean the project of all files and folders that aren't tracked in source control, and then remove the source control folder.
+- run `npm run clean-template` if available and then delete the source control folder
 2. Delete the existing template project in the templates directory of this project.
 3. Copy the cleaned project template into the templates directory of this project.
 
