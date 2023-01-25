@@ -4,6 +4,7 @@ import chalk from 'chalk';
 import os from 'os';
 import {render, TemplateData} from './template-helper';
 import inquirer, {Answers} from 'inquirer';
+import childProcess from 'child_process';
 
 const STARTING_VERSION_NUMBER = '0.1.0';
 
@@ -77,6 +78,7 @@ function createNewProject(
 
   fs.mkdirSync(newProjectPath);
   createDirectoryContents(templatePath, newProjectName, templateData);
+  runPrettierIfNeeded(newProjectName);
   return true;
 }
 
@@ -126,4 +128,15 @@ function resetVersionNumber(packageJsonFileContents: string) {
     newFileContents = newFileContents.replaceAll(/\r?\n/g, os.EOL);
     return newFileContents;
   } else return packageJsonFileContents;
+}
+
+function runPrettierIfNeeded(newProjectName: string) {
+  const prettierConfigFilePath = path.join(
+    CURR_DIR,
+    newProjectName,
+    '.prettierrc.json'
+  );
+  if (fs.existsSync(prettierConfigFilePath)) {
+    childProcess.execSync(`cd ${newProjectName} && npm run prettier`);
+  }
 }

@@ -1,16 +1,4 @@
 {
-  "compilerOptions": {
-    "target": "es2019",
-    "module": "commonjs",
-    "declaration": true,
-    "sourceMap": false,
-    "strict": true,
-    "moduleResolution": "NodeNext",
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "isolatedModules": true
-  },
   "references": [
     {
       "path": "./packages/apps/api-graphql"

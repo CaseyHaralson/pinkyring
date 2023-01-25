@@ -1,18 +1,13 @@
 {
+  "extends": "@tsconfig/node18/tsconfig.json",
   "compilerOptions": {
-    "target": "es2019",
-    "module": "commonjs",
+    "rootDir": "src",
+    "outDir": "build",
+    "composite": true,
     "declaration": true,
-    "sourceMap": false,
-    "strict": true,
-    "moduleResolution": "NodeNext",
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
+    "sourceMap": true,
     "isolatedModules": true,
-    "rootDir": "./src",
-    "outDir": "./build",
-    "composite": true
+    "moduleResolution": "NodeNext"
   },
   "references": [
     {

@@ -3,7 +3,10 @@ import {Author, BlogPost} from '../dtos/blogPost';
 import {BlogPostAddedEvent, EventType} from '../dtos/events';
 // .pinkyring=EVENT_SYSTEM.end
 import Principal from '../interfaces/IPrincipal';
-import IBlogRepository from '../interfaces/IBlogRepository';
+import IBlogRepository, {
+  AuthorSearchCriteria,
+  BlogPostSearchCriteria,
+} from '../interfaces/IBlogRepository';
 import BaseService, {IBaseServiceParams} from './baseService';
 import {IDataValidator} from '../interfaces/IDataValidator';
 import {DATA_ACTION} from '../dtos/dataActions';
@@ -158,15 +161,4 @@ export default class BlogService extends BaseService {
       );
     });
   }
-}
-
-export interface BlogPostSearchCriteria {
-  ids?: string[];
-  authorId?: string;
-  title?: string;
-}
-
-export interface AuthorSearchCriteria {
-  ids?: string[];
-  name?: string;
 }

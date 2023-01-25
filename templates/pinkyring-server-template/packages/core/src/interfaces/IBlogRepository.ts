@@ -1,8 +1,4 @@
 import {Author, BlogPost} from '../dtos/blogPost';
-import {
-  AuthorSearchCriteria,
-  BlogPostSearchCriteria,
-} from '../services/blogService';
 
 export default interface IBlogRepository {
   getBlogPosts(criteria: BlogPostSearchCriteria): Promise<BlogPost[]>;
@@ -10,4 +6,15 @@ export default interface IBlogRepository {
   addAuthor(author: Author): Promise<Author>;
   addBlogPost(blogPost: BlogPost): Promise<BlogPost>;
   updateBlogPost(blogPost: BlogPost): Promise<BlogPost>;
+}
+
+export interface BlogPostSearchCriteria {
+  ids?: string[];
+  authorId?: string;
+  title?: string;
+}
+
+export interface AuthorSearchCriteria {
+  ids?: string[];
+  name?: string;
 }

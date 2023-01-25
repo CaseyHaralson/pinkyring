@@ -1,7 +1,7 @@
 # pinkyring-server-template
 
-This project was created with the Pinkyring project creator.
-Please check that documentation to create another project or to remove some pre-installed code from this project:
+This project was created with the Pinkyring project creator and was based on the <pinkyring.selected_template_name>.
+Please check the pinkyring documentation to create another project or to remove some pre-installed code from this project:
 https://github.com/CaseyHaralson/pinkyring
 
 This project comes with the following as a starting point:
@@ -89,6 +89,7 @@ Note: you will need docker installed and running.
 `npm install`
 
 2. Build everything, create the database, and run the apps:
+    - If you get an error like "Error response from daemon: user declined directory sharing", run the command again and docker will ask for permission to access the directory. Click yes when docker asks for permission.
 
 `npm run everything`
 
@@ -195,7 +196,7 @@ The idempotent request helper will take a requestId from the client and save the
 #### Graphql
 The main Graphql files are in the core/graphql folder. The schema file defines the types and resolvers. The IContext file is used to load necessary services and objects into the resolvers. And, lastly, the IDataLoader can be used for data and batch loading objects.
 
-The graphql apps will need to reference the type/resolvers and load the IContext object. An example app is provided.
+The graphql apps will need to reference the types/resolvers and load the IContext object. An example app is provided.
 
 [//]: # (.pinkyring=GRAPHQL.end)
 [//]: # (.pinkyring=EVENT_SYSTEM)
@@ -258,7 +259,7 @@ If VS Code intellisense isn't working after some change, the following steps can
 3. With a typescript file open, open the command palette (maybe ctrl + shift + p), and then select Typescript: Restart TS server
 
 #### Prisma Commands
-You can run prisma commands from the root project with the following command. There is a script that handles these commands and will also try to take care of keeping a local .env file in sync with the parent .env file.
+You can run prisma commands from the root project with the following command. There is [a script](./packages/infrastructure/relationaldb/prisma/run-prisma-command.js) that handles these commands and will also try to take care of keeping a local .env file in sync with the parent .env file. There are also some useful commands and notes in the prisma schema file.
 
 `npm run prisma <prisma command>`
 
@@ -307,7 +308,7 @@ The project can publish several things to help other projects interface with it.
 - the events that are published
 - expected errors the project can throw
 
-Once you figure out a versioning scheme, and where you want to publish the packages, there is a npm script set up to help with publishing. Running `npm run pub` from the top level project will currently: 
+Once you figure out a versioning scheme and where you want to publish the packages, there is a npm script set up to help with publishing. Running `npm run pub` from the top level project will currently: 
 - build the project
 - copy the version from the main project.json file over to the different projects (if those projects don't have a version specified)
 - run the associated "pub" commands in the core and infrastructure/data-validations packages

@@ -2,6 +2,9 @@ var shell = require('shelljs');
 
 // script to help run prisma commands from the parent package
 // used like "npm run prisma <command>"
+// if the command needs "--<option>"
+// it will need to be run with a separate -- before the option
+// like "-- --<option>"
 
 // there are some commands that need a "local" .env file
 // so the script will copy the parent file down locally
@@ -13,7 +16,7 @@ var shell = require('shelljs');
 // while the package can be moved around or used in different project structures
 
 const args = process.argv;
-// console.log(args);
+// console.log(`command args: ${args}`);
 
 if (args.length < 3) {
   throw new Error(
@@ -40,7 +43,7 @@ if (makeLocalEnvFile) {
 }
 
 // run the prisma command
-//console.log(`running the prisma command "npx prisma ${argString}"`);
+// console.log(`running the prisma command "npx prisma ${argString}"`);
 shell.exec(`cd ../ && npx prisma ${argString}`);
 
 if (makeLocalEnvFile) {
