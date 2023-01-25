@@ -1,18 +1,25 @@
 {
   "name": "pinkyring",
-  "version": "1.1.0",
-  "private": true,
+  "version": "1.1.1",
   "description": "A node project generator that allows you to try a project template, and then remove the pieces you don't want.",
   "keywords": [
     "pinkyring",
     "project generator",
-    "templates"
+    "template",
+    "onion architecture",
+    "hexagonal architecture",
+    "github workflow",
+    "serverless",
+    "serverless framework",
+    "rest",
+    "graphql",
+    "prisma"
   ],
   "homepage": "https://github.com/CaseyHaralson/pinkyring#readme",
   "bugs": {
     "url": "https://github.com/CaseyHaralson/pinkyring/issues"
   },
-  "license": "",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/CaseyHaralson/pinkyring.git"
@@ -35,6 +42,7 @@
   "dependencies": {
     "chalk": "^4.1.2",
     "inquirer": "^8.2.5",
+    "prettier": "2.7.1",
     "rimraf": "^3.0.2"
   },
   "devDependencies": {
@@ -43,7 +51,6 @@
     "@types/shelljs": "^0.8.11",
     "@typescript-eslint/eslint-plugin": "^5.46.1",
     "eslint": "^8.26.0",
-    "prettier": "2.7.1",
     "typescript": "^4.9.3"
   }
 }
