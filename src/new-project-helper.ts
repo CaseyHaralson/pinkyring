@@ -5,11 +5,16 @@ import os from 'os';
 import {render, TemplateData} from './template-helper';
 import inquirer, {Answers} from 'inquirer';
 import childProcess from 'child_process';
+import {ITemplatesConfig} from './ITemplatesConfig';
+import gitly from 'gitly';
 
 const STARTING_VERSION_NUMBER = '0.1.0';
 
 const CURR_DIR = process.cwd();
-const CHOICES = fs.readdirSync(path.join(__dirname, '..', 'templates'));
+const TEMPLATES: ITemplatesConfig = JSON.parse(
+  fs.readFileSync(path.join(CURR_DIR, './templates.json'), 'utf8')
+);
+const CHOICES = TEMPLATES.options.map((o) => o.name);
 const QUESTIONS = [
   {
     name: 'template-choice',
@@ -31,6 +36,7 @@ const QUESTIONS = [
         return 'Project name may only include letters, numbers, underscores and dashes.';
     },
   },
+  // TODO: if project-name like 'pinkyring' need to ask if they are sure
 ];
 
 export function newProject() {
@@ -58,6 +64,20 @@ export function newProject() {
     );
     if (newProjectCreated) console.log(chalk.green('New project created!'));
   });
+}
+
+async function cloneTemplate(repo: string, destinationPath: string) {
+  if (fs.existsSync(destinationPath)) {
+    console.log(
+      chalk.red(
+        `Folder ${destinationPath} already exists. Please delete it or use another project name.`
+      )
+    );
+    return false;
+  }
+
+  await gitly(repo, destinationPath, null);
+  return true;
 }
 
 function createNewProject(

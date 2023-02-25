@@ -72,6 +72,8 @@ The rest of this document will be about the development of this project, not the
 
 Now `pinkyring` can be run from the command line using the local version. When you want to remove the pinkyring link, run: `npm uninstall -g pinkyring`
 
+You can test command line arguments by running the following from inside the root of the project: `npx .`
+
 ### Adding New Template Options
 The template should have a .pinkyring.json file in the root of the project that adheres to the [IPinkyringConfig.ts file](./src/IPinkyringConfig.ts) from the src directory. An example .pinkyring.json implementation can be found [here](./templates/pinkyring-server-template/.pinkyring.json).
 
