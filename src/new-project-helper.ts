@@ -104,6 +104,16 @@ async function cloneTemplate(repo: string, destinationPath: string) {
   }
 
   await gitly(repo, destinationPath, {});
+
+  if (!fs.existsSync(destinationPath)) {
+    console.log(
+      chalk.red(
+        `There was a problem creating the project. Check the repo spelling and make sure the repo is accessible.`
+      )
+    );
+    return false;
+  }
+
   return true;
 }
 
