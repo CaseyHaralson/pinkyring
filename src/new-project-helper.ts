@@ -12,7 +12,7 @@ const STARTING_VERSION_NUMBER = '0.1.0';
 
 const CURR_DIR = process.cwd();
 const TEMPLATES: ITemplatesConfig = JSON.parse(
-  fs.readFileSync(path.join(CURR_DIR, './templates.json'), 'utf8')
+  fs.readFileSync(path.join(__dirname, '..', 'templates.json'), 'utf8')
 );
 const TEMPLATE_CHOICES = TEMPLATES.options.map((o) => o.name);
 const QUESTIONS = [

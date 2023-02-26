@@ -1,17 +1,32 @@
 # pinkyring
 
-A node project generator that allows you to try a project template, and then remove the pieces you don't want.
+A project generator that allows you to try a project template, and then remove pieces of the template that you don't want.
 
 ## New Project
 Note: requires node to be installed.
 
-To create a new project from one of the [templates](#templates):
+New projects can be created from a template that has been "packaged" with pinkyring, or you can supply a repo and pinkyring can use that repo as the template.
+
+### New Project From Packaged Template
+To create a new project from one of the [packaged templates](#templates):
 1. Run the pinkyring command: `npx pinkyring@latest`
 2. Select "Create new project"
 3. Select the template
 4. Type in the name of your new project
 
 A new project from the selected template will be created in the current directory. Change to the new project folder and open the readme.
+
+### New Project From Github Repo
+Note: the repo name is used as a pattern replacement and your new project name will overwrite it anywhere it is found in the new project.
+
+To create a new project from a repo:
+1. Run the pinkyring command: `npx pinkyring@latest`
+2. Select "Create new project"
+3. Select "I'll enter the repo" when asked what template to use
+4. Enter the repo (like "owner/repo-name")
+5. Type in the name of your new project
+
+A new project from the entered repo will be created in the current directory. 
 
 ## Edit Existing Project
 To edit a project that was created with pinkyring:
@@ -75,20 +90,8 @@ Now `pinkyring` can be run from the command line using the local version. When y
 You can test command line arguments by running the following from inside the root of the project: `npx .`
 
 ### Adding New Template Options
-The template should have a .pinkyring.json file in the root of the project that adheres to the [IPinkyringConfig.ts file](./src/IPinkyringConfig.ts) from the src directory. An example .pinkyring.json implementation can be found [here](./templates/pinkyring-server-template/.pinkyring.json).
 
-1. Clean the project of all files and folders that aren't tracked in source control, and then remove the source control folder.
-    - There is a npm script ([clean-template](./templates/pinkyring-server-template/package.json)) in the pinkyring-server-template that resets the project except for removing the source control folder. This can be used as a starting point for the new template.
-2. Copy the cleaned project template into the templates directory of this project.
-3. Build the pinkyring project: `npm run build`
+Edit the templates.json file and add a new entry somewhere above the "I'll enter the repo" entry. The "I'll enter the repo" entry should always come last in the file. The new entry should adhere to the [ITemplatesConfig.ts file](./src/ITemplatesConfig.ts) from the src directory.
 
-If you are running pinkyring locally, then you should now have access to the new project template when creating a new project.
-
-### Updating Existing Template Options
-1. Clean the project of all files and folders that aren't tracked in source control, and then remove the source control folder.
-    - run `npm run clean-template` if available and then delete the source control folder
-2. Delete the existing template project in the templates directory of this project.
-3. Copy the cleaned project template into the templates directory of this project.
-4. Build the pinkyring project: `npm run build`
-
-If you are running pinkyring locally, then you should now have access to the updated project when creating a new project or editing an existing project.
+If you want the new template to have the capacity to remove pieces of the template after the project has been created, the project will need a .pinkyring.json file.
+The template should have a .pinkyring.json file in the root of the project that adheres to the [IPinkyringConfig.ts file](./src/IPinkyringConfig.ts) from the src directory. An example .pinkyring.json implementation can be found [here](https://github.com/CaseyHaralson/pinkyring-server-template/blob/main/.pinkyring.json).
