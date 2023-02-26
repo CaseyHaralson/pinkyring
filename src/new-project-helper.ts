@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import chalk from 'chalk';
 import os from 'os';
-import {render, TemplateData} from './template-helper';
+import {render} from './template-helper';
 import inquirer, {Answers} from 'inquirer';
 import childProcess from 'child_process';
 import {ITemplatesConfig} from './ITemplatesConfig';
@@ -14,56 +14,83 @@ const CURR_DIR = process.cwd();
 const TEMPLATES: ITemplatesConfig = JSON.parse(
   fs.readFileSync(path.join(CURR_DIR, './templates.json'), 'utf8')
 );
-const CHOICES = TEMPLATES.options.map((o) => o.name);
+const TEMPLATE_CHOICES = TEMPLATES.options.map((o) => o.name);
 const QUESTIONS = [
   {
     name: 'template-choice',
     type: 'list',
     message: 'What project template would you like to use?',
-    choices: CHOICES,
-    // when: () => {
-    //   if (CHOICES.length === 1) return false;
-    //   return true;
-    // },
+    choices: TEMPLATE_CHOICES,
+    when: (answers: Answers) => {
+      if (answers['initial-template-repo'] !== null) return false;
+      return true;
+    },
   },
   {
-    name: 'project-name',
+    name: 'template-repo',
     type: 'input',
-    message: 'Project name:',
+    message: 'Template repo (like "owner/repo-name"):',
+    when: (answers: Answers) => {
+      // the last template choice is always entering a repo url
+      // so only ask this question if that was the selected answer
+      if (
+        answers['template-choice'] ===
+        TEMPLATE_CHOICES[TEMPLATE_CHOICES.length - 1]
+      )
+        return true;
+      return false;
+    },
+    validate: function (input: string) {
+      const lastSlashIndex = input.indexOf('/');
+      if (lastSlashIndex < 1 || lastSlashIndex === input.length - 1)
+        return 'Repo must end in format: owner/repo-name';
+      else return true;
+    },
+  },
+  {
+    name: 'new-project-name',
+    type: 'input',
+    message: 'New project name:',
     validate: function (input: string) {
       if (/^([A-Za-z\-_\d])+$/.test(input)) return true;
       else
         return 'Project name may only include letters, numbers, underscores and dashes.';
     },
   },
-  // TODO: if project-name like 'pinkyring' need to ask if they are sure
 ];
 
-export function newProject() {
-  inquirer.prompt(QUESTIONS).then((answers: Answers) => {
+export function newProject(initialTemplateRepo: string) {
+  const initialAnswers: Answers = {
+    'initial-template-repo': initialTemplateRepo,
+  };
+  inquirer.prompt(QUESTIONS, initialAnswers).then(async (answers: Answers) => {
     //console.log(answers);
+    const repo: string =
+      initialTemplateRepo ??
+      answers['template-repo'] ??
+      TEMPLATES.options.find((o) => o.name === answers['template-choice'])
+        ?.repo;
+    const templateName = extractTemplateNameFromRepo(repo);
+    const newProjectName = answers['new-project-name'];
+    const newProjectPath = path.join(CURR_DIR, newProjectName);
 
-    const templateChoice = answers['template-choice'] ?? CHOICES[0];
-    const projectName = answers['project-name'];
-    const templatePath = path.join(
-      __dirname,
-      '..',
-      'templates',
-      templateChoice
-    );
-
-    const templateData = {
-      projectName: projectName,
-      selectedTemplate: templateChoice,
-    } as TemplateData;
-
-    const newProjectCreated = createNewProject(
-      projectName,
-      templatePath,
-      templateData
-    );
-    if (newProjectCreated) console.log(chalk.green('New project created!'));
+    const templateExtracted = await cloneTemplate(repo, newProjectPath);
+    if (templateExtracted) {
+      updateTemplateContents(newProjectPath, templateName, newProjectName);
+      runPrettierIfNeeded(newProjectPath);
+      console.log(chalk.green('New project created!'));
+    }
   });
+}
+
+function extractTemplateNameFromRepo(repo: string) {
+  // repo could look like "owner/repo#version"
+  const lastSlashIndex = repo.lastIndexOf('/');
+  const lastHashIndex = repo.lastIndexOf('#');
+  let templateName = repo.substring(lastSlashIndex + 1);
+  if (lastHashIndex > -1)
+    templateName = templateName.substring(0, lastHashIndex);
+  return templateName;
 }
 
 async function cloneTemplate(repo: string, destinationPath: string) {
@@ -76,62 +103,35 @@ async function cloneTemplate(repo: string, destinationPath: string) {
     return false;
   }
 
-  await gitly(repo, destinationPath, null);
+  await gitly(repo, destinationPath, {});
   return true;
 }
 
-function createNewProject(
-  newProjectName: string,
-  templatePath: string,
-  templateData: TemplateData
+function updateTemplateContents(
+  directoryPath: string,
+  templateName: string,
+  newProjectName: string
 ) {
-  const newProjectPath = path.join(CURR_DIR, newProjectName);
-
-  if (fs.existsSync(newProjectPath)) {
-    console.log(
-      chalk.red(
-        `Folder ${newProjectPath} already exists. Please delete it or use another project name.`
-      )
-    );
-    return false;
-  }
-
-  fs.mkdirSync(newProjectPath);
-  createDirectoryContents(templatePath, newProjectName, templateData);
-  runPrettierIfNeeded(newProjectName);
-  return true;
-}
-
-function createDirectoryContents(
-  templatePath: string,
-  newProjectPath: string,
-  templateData: TemplateData
-) {
-  const filesToCreate = fs.readdirSync(templatePath);
-
-  filesToCreate.forEach((file) => {
-    const origFilePath = path.join(templatePath, file);
-
-    const fileStats = fs.statSync(origFilePath);
+  const files = fs.readdirSync(directoryPath);
+  files.forEach((file) => {
+    const filePath = path.join(directoryPath, file);
+    const fileStats = fs.statSync(filePath);
     if (fileStats.isFile()) {
-      let fileContents = fs.readFileSync(origFilePath, 'utf8');
-      fileContents = render(fileContents, templateData);
+      let fileContents = fs.readFileSync(filePath, 'utf8');
+      fileContents = render(fileContents, templateName, newProjectName);
 
       // if the file is a package.json file, reset the version if needed
       if (file === 'package.json') {
         fileContents = resetVersionNumber(fileContents);
       }
 
-      const writePath = path.join(CURR_DIR, newProjectPath, file);
-      fs.writeFileSync(writePath, fileContents, 'utf8');
-    } else if (fileStats.isDirectory()) {
-      fs.mkdirSync(path.join(CURR_DIR, newProjectPath, file));
-
-      // recursively make new contents
-      createDirectoryContents(
-        path.join(templatePath, file),
-        path.join(newProjectPath, file),
-        templateData
+      fs.writeFileSync(filePath, fileContents, 'utf8');
+    } else {
+      // recursively update template contents
+      updateTemplateContents(
+        path.join(directoryPath, file),
+        templateName,
+        newProjectName
       );
     }
   });
@@ -150,13 +150,9 @@ function resetVersionNumber(packageJsonFileContents: string) {
   } else return packageJsonFileContents;
 }
 
-function runPrettierIfNeeded(newProjectName: string) {
-  const prettierConfigFilePath = path.join(
-    CURR_DIR,
-    newProjectName,
-    '.prettierrc.json'
-  );
+function runPrettierIfNeeded(newProjectPath: string) {
+  const prettierConfigFilePath = path.join(newProjectPath, '.prettierrc.json');
   if (fs.existsSync(prettierConfigFilePath)) {
-    childProcess.execSync(`cd ${newProjectName} && npm run prettier`);
+    childProcess.execSync(`cd ${newProjectPath} && npx prettier --write .`);
   }
 }

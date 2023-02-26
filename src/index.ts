@@ -19,13 +19,13 @@ const QUESTIONS = [
   },
 ];
 
-if (Object.prototype.hasOwnProperty.call(ARGS, 'template')) {
-  newProject();
+if (Object.prototype.hasOwnProperty.call(ARGS, 'template-repo')) {
+  newProject(ARGS['template-repo']);
 } else {
   inquirer.prompt(QUESTIONS).then((answers: Answers) => {
     const action = answers['action'];
     if (action === ACTION_NEW_PROJECT) {
-      newProject();
+      newProject(null);
     } else if (action === ACTION_EDIT_PROJECT) {
       editProject();
     } else if (action === ACTION_CANCEL) {

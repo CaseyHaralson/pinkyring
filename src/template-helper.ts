@@ -1,8 +1,3 @@
-export interface TemplateData {
-  projectName: string;
-  selectedTemplate: string;
-}
-
 /**
  * Replace all instances of the template project name with the new project name.
  * The template project name is cleaned of "-" and "_" before the replacement.
@@ -10,22 +5,24 @@ export interface TemplateData {
  * Also replaces "<pinkyring.selected_template_name>" with the selected template name.
  *
  * @param content a string of the file content from the template
- * @param data data necessary for the replacement
+ * @param templateName the name of the template project
+ * @param newProjectName the name of the new project
  * @returns returns the file content but with the replaced name
  */
-export function render(content: string, data: TemplateData) {
+export function render(
+  content: string,
+  templateName: string,
+  newProjectName: string
+) {
   if (content) {
-    const simpleTemplateName = data.selectedTemplate
+    const simpleTemplateName = templateName
       .replaceAll('-', '')
       .replaceAll('_', '');
-    let newContent = content.replaceAll(
-      data.selectedTemplate,
-      data.projectName
-    );
-    newContent = newContent.replaceAll(simpleTemplateName, data.projectName);
+    const re = new RegExp(`${templateName}|${simpleTemplateName}`, 'gi');
+    let newContent = content.replace(re, newProjectName);
     newContent = newContent.replaceAll(
       '<pinkyring.selected_template_name>',
-      data.selectedTemplate
+      templateName
     );
     return newContent;
   }
