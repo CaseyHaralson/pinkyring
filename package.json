@@ -13,7 +13,8 @@
     "serverless framework",
     "rest",
     "graphql",
-    "prisma"
+    "prisma",
+    "typescript"
   ],
   "homepage": "https://github.com/CaseyHaralson/pinkyring#readme",
   "bugs": {
