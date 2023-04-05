@@ -1,6 +1,10 @@
 {
   "options": [
     {
+      "name": "base-typescript-project",
+      "repo": "CaseyHaralson/base-typescript-project"
+    },
+    {
       "name": "pinkyring-server-template",
       "repo": "CaseyHaralson/pinkyring-server-template"
     },

@@ -42,6 +42,11 @@ Edit the project and select to remove the "PINKYRING HOOKS" option. This will cl
 
 ## Templates
 
+### base-typescript-project
+[project source repository](https://github.com/CaseyHaralson/base-typescript-project)
+
+This is a starter "Hello World!" typescript project template. It has linting, prettier, and file watching for builds and running.
+
 ### pinkyring-server-template
 [project source repository](https://github.com/CaseyHaralson/pinkyring-server-template)
 
@@ -85,7 +90,7 @@ The rest of this document will be about the development of this project, not the
 
 `npm link`
 
-Now `pinkyring` can be run from the command line using the local version. When you want to remove the pinkyring link, run: `npm uninstall -g pinkyring`
+Now `npx pinkyring` can be run from the command line using the local version. When you want to remove the pinkyring link, run: `npm uninstall -g pinkyring`
 
 You can test command line arguments by running the following from inside the root of the project: `npx .`
 

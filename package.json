@@ -1,6 +1,6 @@
 {
   "name": "pinkyring",
-  "version": "1.2.1",
+  "version": "1.3.0",
   "description": "A project generator that allows you to try a project template, and then remove the pieces you don't want.",
   "keywords": [
     "pinkyring",
@@ -13,7 +13,8 @@
     "serverless framework",
     "rest",
     "graphql",
-    "prisma"
+    "prisma",
+    "typescript"
   ],
   "homepage": "https://github.com/CaseyHaralson/pinkyring#readme",
   "bugs": {
