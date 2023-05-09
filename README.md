@@ -42,10 +42,10 @@ Edit the project and select to remove the "PINKYRING HOOKS" option. This will cl
 
 ## Templates
 
-### base-typescript-project
-[project source repository](https://github.com/CaseyHaralson/base-typescript-project)
+### starter-typescript-project
+[project source repository](https://github.com/CaseyHaralson/starter-typescript-project)
 
-This is a starter "Hello World!" typescript project template. It has linting, prettier, and file watching for builds and running.
+This is a starter "Hello World!" typescript project template. It has linting, prettier, and file watching for builds and running. It also includes a starter Dockerfile [^1] with current best practices.
 
 ### pinkyring-server-template
 [project source repository](https://github.com/CaseyHaralson/pinkyring-server-template)
