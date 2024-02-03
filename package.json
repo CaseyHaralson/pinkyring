@@ -15,7 +15,8 @@
     "graphql",
     "prisma",
     "typescript",
-    "docker"
+    "docker",
+    "browser extension"
   ],
   "homepage": "https://github.com/CaseyHaralson/pinkyring#readme",
   "bugs": {

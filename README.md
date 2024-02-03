@@ -77,6 +77,17 @@ It comes with the following as a starting point:
 - Cron maintenance jobs [^1]
 - Event bus/queue interactions with RabbitMQ/Serverless [^1]
 
+### browser-extension-template
+[project source repository](https://github.com/CaseyHaralson/browser-extension-template)
+
+This template is a starting point for generating browser extensions.
+It can generate different extension builds for different browsers (Chrome and Firefox by default), and comes with the following as a starting point:
+
+- **options page** (shown when editing an extension's options)
+- **popup page** (shown when clicking on the extension)
+- **background service worker** (runs behind the scenes with no access to a page's content)
+- **content script that runs on every website** (runs with access to a page's content)
+
 [^1]: Removable with pinkyring
 
 ## Development Mode
