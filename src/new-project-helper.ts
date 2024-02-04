@@ -7,6 +7,7 @@ import inquirer, {Answers} from 'inquirer';
 import childProcess from 'child_process';
 import {ITemplatesConfig} from './ITemplatesConfig';
 import gitly from 'gitly';
+import {isText} from 'istextorbinary';
 
 const STARTING_VERSION_NUMBER = '0.1.0';
 
@@ -126,7 +127,7 @@ function updateTemplateContents(
   files.forEach((file) => {
     const filePath = path.join(directoryPath, file);
     const fileStats = fs.statSync(filePath);
-    if (fileStats.isFile()) {
+    if (fileStats.isFile() && isText(file)) {
       let fileContents = fs.readFileSync(filePath, 'utf8');
       fileContents = render(fileContents, templateName, newProjectName);
 
@@ -136,7 +137,7 @@ function updateTemplateContents(
       }
 
       fs.writeFileSync(filePath, fileContents, 'utf8');
-    } else {
+    } else if (fileStats.isDirectory()) {
       // recursively update template contents
       updateTemplateContents(
         path.join(directoryPath, file),
