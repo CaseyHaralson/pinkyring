@@ -49,6 +49,11 @@ export interface TemplateRemovableOption {
    * This is useful if a glob pattern completely removes a package.
    */
   packageNames?: string[];
+  /**
+   * Removes references from package.json files based on exact script name.
+   * This is useful if a glob pattern completely removes a package.
+   */
+  scriptNames?: string[];
 
   // future?
   // description?: string;

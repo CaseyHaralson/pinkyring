@@ -2,6 +2,21 @@
 
 A project generator that allows you to try a project template, and then remove pieces of the template that you don't want.
 
+[Available templates](#templates):
+
+- **starter-typescript-project:** basic "Hello, World!" typescript project with an easy path forward to integrate Postgres with TypeORM, Redis, and/or Docker for building services.
+- **pinkyring-server-template:** server-side NodeJS project template that is structured around the principals of the onion/hexagonal architecture and comes with a lot of capability.
+- **browser-extension-template:** a starting point for generating browser extensions for multiple browsers
+
+## How-To
+
+There are basically two steps:
+
+1. Run pinkyring, select the template to use, and name the project.
+This creates a new project using the template you chose.
+2. If you want to remove a piece that came with the template, run pinkyring again, and select the piece(s) to remove.
+This removes those sections from the project you created in step 1.
+
 ## New Project
 Note: requires node to be installed.
 
@@ -33,10 +48,10 @@ To edit a project that was created with pinkyring:
 1. Navigate to the project that was created
 2. Run the pinkyring command: `npx pinkyring@latest`
 3. Select "Edit existing project"
-4. Use the prompt to remove whatever section(s).
+4. Use the prompt to remove whatever section(s)
 
 ### Clean Template Hooks
-The templates expose functionality that can be removed and, once you have removed the things you don't need, all of those leftover hooks can be removed from the code.
+The templates expose functionality that can be removed and, once you have removed the things you don't need, all of those leftover hooks (for the functionality you decided to keep) can be removed from the code.
 
 Edit the project and select to remove the "PINKYRING HOOKS" option. This will clean the project of all pinkyring hooks while leaving the functionality intact.
 

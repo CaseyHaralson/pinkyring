@@ -40,6 +40,7 @@ export function editProject() {
       removeContent(removableOption);
       removeTypescriptReferences(removableOption);
       removePackageReferences(removableOption);
+      removeScriptReferences(removableOption);
       saveOptionAsRemoved(templateConfig, removableOption);
 
       wrapUp(removableOption);
@@ -283,11 +284,11 @@ function editEachTsConfig(folderPath: string, patterns: string[]) {
 
 function removePackageReferences(removableOption: TemplateRemovableOption) {
   if (removableOption.packageNames && removableOption.packageNames.length > 0) {
-    editEachPackageConfig(CURR_DIR, removableOption.packageNames);
+    editEachPackageDependencies(CURR_DIR, removableOption.packageNames);
   }
 }
 
-function editEachPackageConfig(folderPath: string, names: string[]) {
+function editEachPackageDependencies(folderPath: string, names: string[]) {
   const files = fs.readdirSync(folderPath);
   files.forEach((file) => {
     if (file === 'node_modules') return;
@@ -332,7 +333,53 @@ function editEachPackageConfig(folderPath: string, names: string[]) {
       }
     } else if (fileStats.isDirectory()) {
       // recursively go through each directory
-      editEachPackageConfig(filePath, names);
+      editEachPackageDependencies(filePath, names);
+    }
+  });
+}
+
+function removeScriptReferences(removableOption: TemplateRemovableOption) {
+  if (removableOption.scriptNames && removableOption.scriptNames.length > 0) {
+    editEachPackageScripts(CURR_DIR, removableOption.scriptNames);
+  }
+}
+
+function editEachPackageScripts(folderPath: string, names: string[]) {
+  const files = fs.readdirSync(folderPath);
+  files.forEach((file) => {
+    if (file === 'node_modules') return;
+
+    const filePath = path.join(folderPath, file);
+    const fileStats = fs.statSync(filePath);
+    if (fileStats.isFile()) {
+      if (file === 'package.json') {
+        const fileContents = fs.readFileSync(filePath, 'utf8');
+        const json = JSON.parse(fileContents);
+
+        let editedTheFile = false;
+        if (json.scripts) {
+          names.forEach((name) => {
+            if (Object.prototype.hasOwnProperty.call(json.scripts, name)) {
+              delete json.scripts[name];
+              editedTheFile = true;
+            }
+          });
+        }
+
+        if (editedTheFile) {
+          // recreate the file
+          fs.writeFileSync(filePath, '', 'utf8');
+
+          const newFileContents = JSON.stringify(json, null, 2);
+          const newFileLines = newFileContents.split(/\r?\n/);
+          newFileLines.forEach((line) => {
+            fs.appendFileSync(filePath, line + os.EOL, 'utf8');
+          });
+        }
+      }
+    } else if (fileStats.isDirectory()) {
+      // recursively go through each directory
+      editEachPackageScripts(filePath, names);
     }
   });
 }
