@@ -16,6 +16,10 @@
     "prisma",
     "typescript",
     "docker",
+    "postgres",
+    "typeorm",
+    "mongodb",
+    "redis",
     "browser extension"
   ],
   "homepage": "https://github.com/CaseyHaralson/pinkyring#readme",

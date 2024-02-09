@@ -2,9 +2,9 @@
 
 A project generator that allows you to try a project template, and then remove pieces of the template that you don't want.
 
-[Available templates](#templates):
+[Packaged templates](#packaged-templates):
 
-- **starter-typescript-project:** basic "Hello, World!" typescript project with an easy path forward to integrate Postgres with TypeORM, Redis, and/or Docker for building services.
+- **starter-typescript-project:** basic "Hello, World!" typescript project with an easy path forward to integrate Postgres with TypeORM, MongoDB, Redis, and/or Docker for building services
 - **pinkyring-server-template:** server-side NodeJS project template that is structured around the principals of the onion/hexagonal architecture and comes with a lot of capability.
 - **browser-extension-template:** a starting point for generating browser extensions for multiple browsers
 
@@ -12,18 +12,18 @@ A project generator that allows you to try a project template, and then remove p
 
 There are basically two steps:
 
-1. Run pinkyring, select the template to use, and name the project.
+1. Run pinkyring, select the template or repo to use, and name the project.
 This creates a new project using the template you chose.
-2. If you want to remove a piece that came with the template, run pinkyring again, and select the piece(s) to remove.
+2. If you want to remove a piece that came with the template, go to the project, run pinkyring again, and select the piece(s) to remove.
 This removes those sections from the project you created in step 1.
 
-## New Project
+## Create Project from Template or Repo
 Note: requires node to be installed.
 
 New projects can be created from a template that has been "packaged" with pinkyring, or you can supply a repo and pinkyring can use that repo as the template.
 
 ### New Project From Packaged Template
-To create a new project from one of the [packaged templates](#templates):
+To create a new project from one of the [packaged templates](#packaged-templates):
 1. Run the pinkyring command: `npx pinkyring@latest`
 2. Select "Create new project"
 3. Select the template
@@ -43,7 +43,7 @@ To create a new project from a repo:
 
 A new project from the entered repo will be created in the current directory. 
 
-## Edit Existing Project
+## Edit Project to Remove Pieces of the Template
 To edit a project that was created with pinkyring:
 1. Navigate to the project that was created
 2. Run the pinkyring command: `npx pinkyring@latest`
@@ -52,18 +52,19 @@ To edit a project that was created with pinkyring:
 
 ### Clean Template Hooks
 The templates expose functionality that can be removed and, once you have removed the things you don't need, all of those leftover hooks (for the functionality you decided to keep) can be removed from the code.
+This will clean the project of all pinkyring hooks while leaving the functionality intact.
 
-Edit the project and select to remove the "PINKYRING HOOKS" option. This will clean the project of all pinkyring hooks while leaving the functionality intact.
+Edit the project and select to remove the "PINKYRING HOOKS" option to clean the project.
 
-## Templates
+## Packaged Templates
 
 ### starter-typescript-project
-[project source repository](https://github.com/CaseyHaralson/starter-typescript-project)
+[explore project source](https://github.com/CaseyHaralson/starter-typescript-project)
 
-This is a starter "Hello World!" typescript project template. It has linting, prettier, and file watching for builds and running. It also includes a starter Dockerfile [^1] with current best practices.
+This is a starter "Hello World!" typescript project template. It has linting, prettier, and file watching for builds and running. It also includes a starter Dockerfile [^1] with current best practices, Postgres/TypeORM [^1], MongoDB [^1], and Redis [^1].
 
 ### pinkyring-server-template
-[project source repository](https://github.com/CaseyHaralson/pinkyring-server-template)
+[explore project source](https://github.com/CaseyHaralson/pinkyring-server-template)
 
 This is a server-side project template that is structured around the principals of the onion/hexagonal architecture.
 
@@ -93,7 +94,7 @@ It comes with the following as a starting point:
 - Event bus/queue interactions with RabbitMQ/Serverless [^1]
 
 ### browser-extension-template
-[project source repository](https://github.com/CaseyHaralson/browser-extension-template)
+[explore project source](https://github.com/CaseyHaralson/browser-extension-template)
 
 This template is a starting point for generating browser extensions.
 It can generate different extension builds for different browsers (Chrome and Firefox by default), and comes with the following as a starting point:
@@ -105,8 +106,8 @@ It can generate different extension builds for different browsers (Chrome and Fi
 
 [^1]: Removable with pinkyring
 
-## Development Mode
-The rest of this document will be about the development of this project, not the templates. If you are interested in the development of a project based on a template, check out the project source readme in your project or from the appropriate link in the [templates section](#templates).
+## pinkyring Development Mode
+The rest of this document will be about the development of THIS project (pinkyring), not the templates.
 
 ### Local pinkyring Install
 
