@@ -104,7 +104,7 @@ It can generate different extension builds for different browsers (Chrome and Fi
 - **background service worker** (runs behind the scenes with no access to a page's content)
 - **content script that runs on every website** (runs with access to a page's content)
 
-[^1]: Removable with pinkyring
+[^1]: This functionality is removable with pinkyring
 
 ## pinkyring Development Mode
 The rest of this document will be about the development of THIS project (pinkyring), not the templates.
