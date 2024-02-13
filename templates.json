@@ -9,6 +9,10 @@
       "repo": "CaseyHaralson/pinkyring-server-template"
     },
     {
+      "name": "python-flask-template",
+      "repo": "CaseyHaralson/python-flask-template"
+    },
+    {
       "name": "browser-extension-template",
       "repo": "CaseyHaralson/browser-extension-template"
     },

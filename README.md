@@ -4,8 +4,9 @@ A project generator that allows you to try a project template, and then remove p
 
 [Packaged templates](#packaged-templates):
 
-- **starter-typescript-project:** basic "Hello, World!" typescript project with an easy path forward to integrate Postgres with TypeORM, MongoDB, Redis, and/or Docker for building services
-- **pinkyring-server-template:** server-side NodeJS project template that is structured around the principals of the onion/hexagonal architecture and comes with a lot of capability.
+- **starter-typescript-project:** basic "Hello, World!" Typescript project with an easy path forward to integrate Postgres with TypeORM, MongoDB, Redis, and/or Docker for building services
+- **pinkyring-server-template:** server-side NodeJS project template that is structured around the principals of the onion/hexagonal architecture and comes with a lot of capability
+- **python-flask-template:** basic Python Flask api project with examples of using marshmallow for data validation and MongoDB for data storage
 - **browser-extension-template:** a starting point for generating browser extensions for multiple browsers
 
 ## How-To
@@ -18,7 +19,7 @@ This creates a new project using the template you chose.
 This removes those sections from the project you created in step 1.
 
 ## Create Project from Template or Repo
-Note: requires node to be installed.
+Note: requires NodeJS to be installed.
 
 New projects can be created from a template that has been "packaged" with pinkyring, or you can supply a repo and pinkyring can use that repo as the template.
 
@@ -92,6 +93,12 @@ It comes with the following as a starting point:
 - Jest tests
 - Cron maintenance jobs [^1]
 - Event bus/queue interactions with RabbitMQ/Serverless [^1]
+
+### python-flask-template
+[explore project source](https://github.com/CaseyHaralson/python-flask-template)
+
+This is a starter Python Flask api project with examples of using marshmallow for data validation and MongoDB [^1] for data storage.
+It also includes a starter Dockerfile [^1] that uses Gunicorn for production.
 
 ### browser-extension-template
 [explore project source](https://github.com/CaseyHaralson/browser-extension-template)
