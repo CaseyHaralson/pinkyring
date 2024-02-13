@@ -5,6 +5,7 @@ import rimraf from 'rimraf';
 import os from 'os';
 import {IPinkyringConfig, TemplateRemovableOption} from './IPinkyringConfig';
 import inquirer, {Answers} from 'inquirer';
+import {isText} from 'istextorbinary';
 
 const CURR_DIR = process.cwd();
 
@@ -16,6 +17,15 @@ const CONTENT_TO_SKIP_LINE_EDITS = [
   'package.json',
   'tsconfig.json',
   'tsconfig.tsbuildinfo',
+  '__pycache__',
+  '.ipynb_checkpoints',
+];
+
+const CONTENT_TO_SKIP_CONFIG_EDITS = [
+  'node_modules',
+  'build',
+  '__pycache__',
+  '.ipynb_checkpoints',
 ];
 
 export function editProject() {
@@ -187,40 +197,40 @@ function removeContent(removableOption: TemplateRemovableOption) {
 function editEachFile(folderPath: string, contentPattern: string) {
   const files = fs.readdirSync(folderPath);
   files.forEach((file) => {
-    if (!CONTENT_TO_SKIP_LINE_EDITS.includes(file)) {
-      const filePath = path.join(folderPath, file);
-      const fileStats = fs.statSync(filePath);
-      if (fileStats.isFile()) {
-        // read and edit file if necessary
-        const fileContents = fs.readFileSync(filePath, 'utf8');
-        if (fileContents.indexOf(contentPattern) !== -1) {
-          const fileLines = fileContents.split(/\r?\n/);
-          const lastLineIndex = fileLines.length - 1;
+    if (CONTENT_TO_SKIP_LINE_EDITS.includes(file)) return;
 
-          // recreate the file
-          fs.writeFileSync(filePath, '', 'utf8');
+    const filePath = path.join(folderPath, file);
+    const fileStats = fs.statSync(filePath);
+    if (fileStats.isFile() && isText(file)) {
+      // read and edit file if necessary
+      const fileContents = fs.readFileSync(filePath, 'utf8');
+      if (fileContents.indexOf(contentPattern) !== -1) {
+        const fileLines = fileContents.split(/\r?\n/);
+        const lastLineIndex = fileLines.length - 1;
 
-          // read each line and remove sections of the content pattern
-          let write = true;
-          fileLines.forEach((line, index) => {
-            if (write && line.indexOf(contentPattern) > -1) {
-              write = false;
-            } else if (write) {
-              // append an EOL if not the last line
-              if (index < lastLineIndex) {
-                fs.appendFileSync(filePath, line + os.EOL, 'utf8');
-              } else {
-                fs.appendFileSync(filePath, line, 'utf8');
-              }
-            } else if (line.indexOf(contentPattern + '.end') > -1) {
-              write = true;
+        // recreate the file
+        fs.writeFileSync(filePath, '', 'utf8');
+
+        // read each line and remove sections of the content pattern
+        let write = true;
+        fileLines.forEach((line, index) => {
+          if (write && line.indexOf(contentPattern) > -1) {
+            write = false;
+          } else if (write) {
+            // append an EOL if not the last line
+            if (index < lastLineIndex) {
+              fs.appendFileSync(filePath, line + os.EOL, 'utf8');
+            } else {
+              fs.appendFileSync(filePath, line, 'utf8');
             }
-          });
-        }
-      } else if (fileStats.isDirectory()) {
-        // recursively go through each directory
-        editEachFile(filePath, contentPattern);
+          } else if (line.indexOf(contentPattern + '.end') > -1) {
+            write = true;
+          }
+        });
       }
+    } else if (fileStats.isDirectory()) {
+      // recursively go through each directory
+      editEachFile(filePath, contentPattern);
     }
   });
 }
@@ -237,43 +247,41 @@ function removeTypescriptReferences(removableOption: TemplateRemovableOption) {
 function editEachTsConfig(folderPath: string, patterns: string[]) {
   const files = fs.readdirSync(folderPath);
   files.forEach((file) => {
-    if (file === 'node_modules') return;
+    if (CONTENT_TO_SKIP_CONFIG_EDITS.includes(file)) return;
 
     const filePath = path.join(folderPath, file);
     const fileStats = fs.statSync(filePath);
-    if (fileStats.isFile()) {
-      if (file === 'tsconfig.json') {
-        const fileContents = fs.readFileSync(filePath, 'utf8');
-        const json = JSON.parse(fileContents);
+    if (fileStats.isFile() && file === 'tsconfig.json') {
+      const fileContents = fs.readFileSync(filePath, 'utf8');
+      const json = JSON.parse(fileContents);
 
-        // check each reference and see if matches one of the patterns
-        // if it does, splice the item out of the references
-        let editedTheFile = false;
-        if (json.references && json.references.length > 0) {
-          for (let i = json.references.length - 1; i >= 0; i--) {
-            const jsonItem = json.references[i];
-            if (jsonItem.path) {
-              patterns.forEach((pattern) => {
-                if (jsonItem.path.indexOf(pattern) > -1) {
-                  json.references.splice(i, 1);
-                  editedTheFile = true;
-                  return;
-                }
-              });
-            }
+      // check each reference and see if matches one of the patterns
+      // if it does, splice the item out of the references
+      let editedTheFile = false;
+      if (json.references && json.references.length > 0) {
+        for (let i = json.references.length - 1; i >= 0; i--) {
+          const jsonItem = json.references[i];
+          if (jsonItem.path) {
+            patterns.forEach((pattern) => {
+              if (jsonItem.path.indexOf(pattern) > -1) {
+                json.references.splice(i, 1);
+                editedTheFile = true;
+                return;
+              }
+            });
           }
         }
+      }
 
-        if (editedTheFile) {
-          // recreate the file
-          fs.writeFileSync(filePath, '', 'utf8');
+      if (editedTheFile) {
+        // recreate the file
+        fs.writeFileSync(filePath, '', 'utf8');
 
-          const newFileContents = JSON.stringify(json, null, 2);
-          const newFileLines = newFileContents.split(/\r?\n/);
-          newFileLines.forEach((line) => {
-            fs.appendFileSync(filePath, line + os.EOL, 'utf8');
-          });
-        }
+        const newFileContents = JSON.stringify(json, null, 2);
+        const newFileLines = newFileContents.split(/\r?\n/);
+        newFileLines.forEach((line) => {
+          fs.appendFileSync(filePath, line + os.EOL, 'utf8');
+        });
       }
     } else if (fileStats.isDirectory()) {
       // recursively go through each directory
@@ -291,49 +299,113 @@ function removePackageReferences(removableOption: TemplateRemovableOption) {
 function editEachPackageDependencies(folderPath: string, names: string[]) {
   const files = fs.readdirSync(folderPath);
   files.forEach((file) => {
-    if (file === 'node_modules') return;
+    if (CONTENT_TO_SKIP_CONFIG_EDITS.includes(file)) return;
 
     const filePath = path.join(folderPath, file);
     const fileStats = fs.statSync(filePath);
     if (fileStats.isFile()) {
-      if (file === 'package.json') {
-        const fileContents = fs.readFileSync(filePath, 'utf8');
-        const json = JSON.parse(fileContents);
-
-        let editedTheFile = false;
-        if (json.dependencies) {
-          names.forEach((name) => {
-            if (Object.prototype.hasOwnProperty.call(json.dependencies, name)) {
-              delete json.dependencies[name];
-              editedTheFile = true;
-            }
-          });
-        }
-        if (json.devDependencies) {
-          names.forEach((name) => {
-            if (
-              Object.prototype.hasOwnProperty.call(json.devDependencies, name)
-            ) {
-              delete json.devDependencies[name];
-              editedTheFile = true;
-            }
-          });
-        }
-
-        if (editedTheFile) {
-          // recreate the file
-          fs.writeFileSync(filePath, '', 'utf8');
-
-          const newFileContents = JSON.stringify(json, null, 2);
-          const newFileLines = newFileContents.split(/\r?\n/);
-          newFileLines.forEach((line) => {
-            fs.appendFileSync(filePath, line + os.EOL, 'utf8');
-          });
-        }
-      }
+      if (file === 'package.json')
+        removeDependencyFromPackageJson(filePath, names);
+      else if (file === 'environment.yml')
+        removeDependencyFromEnvironmentYml(filePath, names);
+      else if (file === 'requirements.txt')
+        removeDependencyFromRequirementsTxt(filePath, names);
     } else if (fileStats.isDirectory()) {
       // recursively go through each directory
       editEachPackageDependencies(filePath, names);
+    }
+  });
+}
+
+function removeDependencyFromPackageJson(filePath: string, names: string[]) {
+  const fileContents = fs.readFileSync(filePath, 'utf8');
+  const json = JSON.parse(fileContents);
+
+  let editedTheFile = false;
+  if (json.dependencies) {
+    names.forEach((name) => {
+      if (Object.prototype.hasOwnProperty.call(json.dependencies, name)) {
+        delete json.dependencies[name];
+        editedTheFile = true;
+      }
+    });
+  }
+  if (json.devDependencies) {
+    names.forEach((name) => {
+      if (Object.prototype.hasOwnProperty.call(json.devDependencies, name)) {
+        delete json.devDependencies[name];
+        editedTheFile = true;
+      }
+    });
+  }
+
+  if (editedTheFile) {
+    // recreate the file
+    fs.writeFileSync(filePath, '', 'utf8');
+
+    const newFileContents = JSON.stringify(json, null, 2);
+    const newFileLines = newFileContents.split(/\r?\n/);
+    newFileLines.forEach((line) => {
+      fs.appendFileSync(filePath, line + os.EOL, 'utf8');
+    });
+  }
+}
+
+function removeDependencyFromEnvironmentYml(filePath: string, names: string[]) {
+  const fileContents = fs.readFileSync(filePath, 'utf8');
+
+  const fileLines = fileContents.split(/\r?\n/);
+  const lastLineIndex = fileLines.length - 1;
+
+  // recreate the file
+  fs.writeFileSync(filePath, '', 'utf8');
+
+  // read each line and remove any of the named dependencies
+  fileLines.forEach((line, index) => {
+    let write = true;
+
+    names.forEach((name) => {
+      write = write && !new RegExp(`^ *- ${name}`).test(line);
+    });
+
+    if (write) {
+      // append an EOL if not the last line
+      if (index < lastLineIndex) {
+        fs.appendFileSync(filePath, line + os.EOL, 'utf8');
+      } else {
+        fs.appendFileSync(filePath, line, 'utf8');
+      }
+    }
+  });
+}
+
+function removeDependencyFromRequirementsTxt(
+  filePath: string,
+  names: string[]
+) {
+  const fileContents = fs.readFileSync(filePath, 'utf8');
+
+  const fileLines = fileContents.split(/\r?\n/);
+  const lastLineIndex = fileLines.length - 1;
+
+  // recreate the file
+  fs.writeFileSync(filePath, '', 'utf8');
+
+  // read each line and remove any of the named dependencies
+  fileLines.forEach((line, index) => {
+    let write = true;
+
+    names.forEach((name) => {
+      write = write && !new RegExp(`^ *${name}`).test(line);
+    });
+
+    if (write) {
+      // append an EOL if not the last line
+      if (index < lastLineIndex) {
+        fs.appendFileSync(filePath, line + os.EOL, 'utf8');
+      } else {
+        fs.appendFileSync(filePath, line, 'utf8');
+      }
     }
   });
 }
@@ -347,35 +419,33 @@ function removeScriptReferences(removableOption: TemplateRemovableOption) {
 function editEachPackageScripts(folderPath: string, names: string[]) {
   const files = fs.readdirSync(folderPath);
   files.forEach((file) => {
-    if (file === 'node_modules') return;
+    if (CONTENT_TO_SKIP_CONFIG_EDITS.includes(file)) return;
 
     const filePath = path.join(folderPath, file);
     const fileStats = fs.statSync(filePath);
-    if (fileStats.isFile()) {
-      if (file === 'package.json') {
-        const fileContents = fs.readFileSync(filePath, 'utf8');
-        const json = JSON.parse(fileContents);
+    if (fileStats.isFile() && file === 'package.json') {
+      const fileContents = fs.readFileSync(filePath, 'utf8');
+      const json = JSON.parse(fileContents);
 
-        let editedTheFile = false;
-        if (json.scripts) {
-          names.forEach((name) => {
-            if (Object.prototype.hasOwnProperty.call(json.scripts, name)) {
-              delete json.scripts[name];
-              editedTheFile = true;
-            }
-          });
-        }
+      let editedTheFile = false;
+      if (json.scripts) {
+        names.forEach((name) => {
+          if (Object.prototype.hasOwnProperty.call(json.scripts, name)) {
+            delete json.scripts[name];
+            editedTheFile = true;
+          }
+        });
+      }
 
-        if (editedTheFile) {
-          // recreate the file
-          fs.writeFileSync(filePath, '', 'utf8');
+      if (editedTheFile) {
+        // recreate the file
+        fs.writeFileSync(filePath, '', 'utf8');
 
-          const newFileContents = JSON.stringify(json, null, 2);
-          const newFileLines = newFileContents.split(/\r?\n/);
-          newFileLines.forEach((line) => {
-            fs.appendFileSync(filePath, line + os.EOL, 'utf8');
-          });
-        }
+        const newFileContents = JSON.stringify(json, null, 2);
+        const newFileLines = newFileContents.split(/\r?\n/);
+        newFileLines.forEach((line) => {
+          fs.appendFileSync(filePath, line + os.EOL, 'utf8');
+        });
       }
     } else if (fileStats.isDirectory()) {
       // recursively go through each directory
@@ -414,35 +484,35 @@ function removeAllPinkyringHooks(templateConfig: IPinkyringConfig) {
 function removeHooksFromEachFile(folderPath: string, contentPattern: string) {
   const files = fs.readdirSync(folderPath);
   files.forEach((file) => {
-    if (!CONTENT_TO_SKIP_LINE_EDITS.includes(file)) {
-      const filePath = path.join(folderPath, file);
-      const fileStats = fs.statSync(filePath);
-      if (fileStats.isFile()) {
-        // read and edit file if necessary
-        const fileContents = fs.readFileSync(filePath, 'utf8');
-        if (fileContents.indexOf(contentPattern) !== -1) {
-          const fileLines = fileContents.split(/\r?\n/);
-          const lastLineIndex = fileLines.length - 1;
+    if (CONTENT_TO_SKIP_LINE_EDITS.includes(file)) return;
 
-          // recreate the file
-          fs.writeFileSync(filePath, '', 'utf8');
+    const filePath = path.join(folderPath, file);
+    const fileStats = fs.statSync(filePath);
+    if (fileStats.isFile() && isText(file)) {
+      // read and edit file if necessary
+      const fileContents = fs.readFileSync(filePath, 'utf8');
+      if (fileContents.indexOf(contentPattern) !== -1) {
+        const fileLines = fileContents.split(/\r?\n/);
+        const lastLineIndex = fileLines.length - 1;
 
-          // read each line and remove if the pattern matches
-          fileLines.forEach((line, index) => {
-            if (line.indexOf(contentPattern) === -1) {
-              // append an EOL if not the last line
-              if (index < lastLineIndex) {
-                fs.appendFileSync(filePath, line + os.EOL, 'utf8');
-              } else {
-                fs.appendFileSync(filePath, line, 'utf8');
-              }
+        // recreate the file
+        fs.writeFileSync(filePath, '', 'utf8');
+
+        // read each line and remove if the pattern matches
+        fileLines.forEach((line, index) => {
+          if (line.indexOf(contentPattern) === -1) {
+            // append an EOL if not the last line
+            if (index < lastLineIndex) {
+              fs.appendFileSync(filePath, line + os.EOL, 'utf8');
+            } else {
+              fs.appendFileSync(filePath, line, 'utf8');
             }
-          });
-        }
-      } else if (fileStats.isDirectory()) {
-        // recursively go through each directory
-        removeHooksFromEachFile(filePath, contentPattern);
+          }
+        });
       }
+    } else if (fileStats.isDirectory()) {
+      // recursively go through each directory
+      removeHooksFromEachFile(filePath, contentPattern);
     }
   });
 }
