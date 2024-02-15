@@ -2,12 +2,12 @@
 
 A project generator that allows you to try a project template, and then remove pieces of the template that you don't want.
 
-[Packaged templates](#packaged-templates):
+Packaged templates:
 
-- **starter-typescript-project:** basic "Hello, World!" Typescript project with an easy path forward to integrate Postgres with TypeORM, MongoDB, Redis, and/or Docker for building services
-- **pinkyring-server-template:** server-side NodeJS project template that is structured around the principals of the onion/hexagonal architecture and comes with a lot of capability
-- **python-flask-template:** basic Python Flask api project with examples of using marshmallow for data validation and MongoDB for data storage
-- **browser-extension-template:** a starting point for generating browser extensions for multiple browsers
+- [starter-typescript-project:](#starter-typescript-project) basic "Hello, World!" Typescript project with an easy path forward to integrate Postgres with TypeORM, MongoDB, Redis, and/or Docker for building services
+- [pinkyring-server-template:](#pinkyring-server-template) server-side NodeJS project template that is structured around the principals of the onion/hexagonal architecture and comes with a lot of capability
+- [python-flask-template:](#python-flask-template) basic Python Flask api project with examples of using marshmallow for data validation and MongoDB for data storage
+- [browser-extension-template:](#browser-extension-template) a starting point for generating browser extensions for multiple browsers
 
 ## How-To
 
@@ -21,7 +21,7 @@ This removes those sections from the project you created in step 1.
 ## Create Project from Template or Repo
 Note: requires NodeJS to be installed.
 
-New projects can be created from a template that has been "packaged" with pinkyring, or you can supply a repo and pinkyring can use that repo as the template.
+New projects can be created from a template that has been "packaged" with pinkyring, or you can enter a repo and pinkyring can use that repo as the template.
 
 ### New Project From Packaged Template
 To create a new project from one of the [packaged templates](#packaged-templates):
@@ -113,7 +113,7 @@ It can generate different extension builds for different browsers (Chrome and Fi
 
 [^1]: This functionality is removable with pinkyring
 
-## pinkyring Development Mode
+## pinkyring Development
 The rest of this document will be about the development of THIS project (pinkyring), not the templates.
 
 ### Local pinkyring Install
