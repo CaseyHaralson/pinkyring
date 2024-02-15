@@ -35,7 +35,7 @@
   },
   "author": "Casey Haralson",
   "bin": {
-    "pinkyring": "./entry-file.js"
+    "pinkyring": "entry-file.js"
   },
   "main": "dist/index.js",
   "files": [
