@@ -17,6 +17,10 @@
       "repo": "CaseyHaralson/browser-extension-template"
     },
     {
+      "name": "documentation-template",
+      "repo": "CaseyHaralson/documentation-template"
+    },
+    {
       "name": "I'll enter the repo"
     }
   ]

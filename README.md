@@ -8,6 +8,7 @@ Packaged templates:
 - [pinkyring-server-template:](#pinkyring-server-template) server-side NodeJS project template that is structured around the principals of the onion/hexagonal architecture and comes with a lot of capability
 - [python-flask-template:](#python-flask-template) basic Python Flask api project with examples of using marshmallow for data validation and MongoDB for data storage
 - [browser-extension-template:](#browser-extension-template) a starting point for generating browser extensions for multiple browsers
+- [documentation-template:](#documentation-template) an outline for a documentation project using the PARA method, Zettelkasten method, and MOC approach.
 
 ## How-To
 
@@ -110,6 +111,11 @@ It can generate different extension builds for different browsers (Chrome and Fi
 - **popup page** (shown when clicking on the extension)
 - **background service worker** (runs behind the scenes with no access to a page's content)
 - **content script that runs on every website** (runs with access to a page's content)
+
+### documentation-template
+[explore project source](https://github.com/CaseyHaralson/documentation-template)
+
+This is a documentation project organized using the PARA method, with Zettelkasten principles for individual notes and MOCs (Maps of Content) as navigation hubs.
 
 [^1]: This functionality is removable with pinkyring
 
