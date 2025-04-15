@@ -1,6 +1,6 @@
 {
   "name": "pinkyring",
-  "version": "1.8.0",
+  "version": "1.8.1",
   "description": "A project generator that allows you to try a project template, and then remove the pieces you don't want.",
   "keywords": [
     "pinkyring",
