@@ -52,7 +52,7 @@
     "list:global": "npm list -g --depth=0"
   },
   "dependencies": {
-    "chalk": "^5.3.0",
+    "chalk": "^4.1.2",
     "gitly": "^3.0.1",
     "inquirer": "^8.2.5",
     "istextorbinary": "^9.5.0",
