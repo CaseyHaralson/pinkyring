@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import chalk from 'chalk';
-import rimraf from 'rimraf';
+import {rimrafSync} from 'rimraf';
 import os from 'os';
 import {IPinkyringConfig, TemplateRemovableOption} from './IPinkyringConfig';
 import inquirer, {Answers} from 'inquirer';
@@ -176,7 +176,7 @@ function sayGoodbye() {
 function removeGlobs(removableOption: TemplateRemovableOption) {
   if (removableOption.globPatterns && removableOption.globPatterns.length > 0) {
     removableOption.globPatterns.forEach((pattern) => {
-      rimraf.sync(pattern);
+      rimrafSync(pattern);
     });
   }
 }

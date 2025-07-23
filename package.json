@@ -69,5 +69,8 @@
   },
   "overrides": {
     "braces": "3.0.3"
+  },
+  "engines": {
+    "node": "20 || >=22"
   }
 }
