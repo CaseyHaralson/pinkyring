@@ -52,6 +52,7 @@
     "list:global": "npm list -g --depth=0"
   },
   "dependencies": {
+    "audit": "^0.0.6",
     "chalk": "^4.1.2",
     "gitly": "^3.0.1",
     "inquirer": "^8.2.5",
